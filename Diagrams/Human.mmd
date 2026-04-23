@@ -1,0 +1,16 @@
+sequenceDiagram
+  autonumber
+  participant NX as Nexus ∞
+  participant L2 as LiveKit / SIP Layer
+  participant AMD as AMD
+  participant C as Cortex ∞ / Pipecat
+  participant PD as Pro Desk Associate
+  participant CU as Customer
+
+  NX->>L2: Start outbound call
+  L2->>AMD: Call answered, evaluate answer type
+  AMD-->>L2: Human detected
+  L2->>C: Start AI pipeline + audio stream
+  C->>CU: Speak promotion
+  CU-->>C: Respond
+  C-->>PD: Live transcript + suggestions

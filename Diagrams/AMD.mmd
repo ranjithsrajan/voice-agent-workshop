@@ -1,0 +1,21 @@
+flowchart TB
+  subgraph L2[Layer 2 — Infinity Nexus + LiveKit]
+    L2A[Compliance gate]
+    L2B[Call orchestration]
+    L2C[Carrier bridge: SIP / PSTN / WebRTC]
+    L2D[Noise suppression + echo cancellation]
+    L2E[LiveKit room + media routing]
+    L2F[PSTN carrier AMD Twilio / Telnyx]
+end
+
+  subgraph L3[Layer 3 — Infinity Cortex + Pipecat]
+    L3A[AI AMD / voicemail heuristics]
+    L3B[VAD / turn detection]
+    L3C[STT]
+    L3D[LLM reasoning]
+    L3E[TTS]
+  end
+
+  L2C --> L2F --> L2E
+  L2E <--> L3A
+  L3A --> L3B --> L3C --> L3D --> L3E --> L2E

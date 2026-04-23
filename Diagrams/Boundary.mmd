@@ -1,0 +1,35 @@
+flowchart LR
+  subgraph N[Nexus ∞ — Orchestration Layer]
+    N1[Compliance + eligibility checks]
+    N2[Call trigger / routing decision]
+    N3[Retry / fallback / disposition]
+    N4[CRM sync + analytics]
+  end
+
+  subgraph L[LiveKit — Media Transport Layer]
+    L1[SIP Bridge]
+    L2[WebRTC Server]
+    L3[Room + media router]
+  end
+
+  subgraph P[Pipecat / Cortex ∞ — AI Conversation Layer]
+    P1[Transport-aware audio config]
+    P2[STT]
+    P3[LLM reasoning]
+    P4[TTS]
+    P5[Conversation signals]
+  end
+
+  C[Customer phone / browser / app]
+  R[CRM / Workbench]
+
+  N1 --> N2 --> L1
+  N2 --> L2
+  L1 --> L3
+  L2 --> L3
+  C <--> L3
+  L3 <--> P1
+  P1 --> P2 --> P3 --> P4 --> L3
+  P5 --> N3
+  N4 <--> R
+  N3 --> N4

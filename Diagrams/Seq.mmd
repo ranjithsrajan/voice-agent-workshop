@@ -1,0 +1,52 @@
+sequenceDiagram
+  autonumber
+  participant PD as Pro Desk Associate
+  participant WB as Workbench
+  participant NX as Nexus ∞
+  participant CRM as Infinity CRM
+  participant SF as Salesforce CRM
+  participant LC as Compliance Guard
+  participant LK as LiveKit
+  participant SIP as SIP Trunk (Twilio/Telnyx)
+  participant PSTN as Customer Phone
+  participant PC as Pipecat / Cortex ∞
+  participant M as Memory / Context Store
+
+  PD->>WB: Open AINTC account list
+  WB->>CRM: Pull eligible accounts + promotion context
+  CRM-->>WB: Account, contact, prior engagement, promo details
+  WB->>NX: Start outbound engagement
+  NX->>LC: Check DNC, consent, timezone, attempt limit
+  LC-->>NX: Approved
+  NX->>CRM: Create engagement record in "In Progress"
+  NX->>LK: Create LiveKit room + session metadata
+  NX->>SIP: Dial customer via PSTN trunk
+  SIP->>PSTN: Ring customer phone
+  PSTN-->>SIP: Customer answers
+  SIP-->>LK: Bridge call into LiveKit room
+  LK->>PC: Stream audio with transport context = pstn
+  PC->>M: Load customer profile + promotion context
+  PC->>PC: STT + intent + objection detection + response generation
+  PC-->>LK: TTS response / coaching signal
+  LK-->>PSTN: Audio back to customer
+  PSTN-->>PD: Customer hears promotion pitch
+
+  alt Customer interested
+    PC-->>NX: high_intent / callback_request
+    NX->>WB: Prompt associate with next best action
+    PD->>WB: Log notes + schedule follow-up
+    WB->>CRM: Sync engagement + outcome
+    WB->>SF: Sync if required
+  else Customer not interested
+    PC-->>NX: low_intent / no_follow_up
+    NX->>WB: Suggest disposition and closeout
+    PD->>WB: Mark disposition
+    WB->>CRM: Update outcome + transcript key
+    WB->>SF: Sync if required
+  else Voicemail detected
+    PC-->>NX: voicemail_detected
+    NX->>SIP: End call / drop voicemail if policy allows
+    NX->>WB: Show voicemail disposition + CTA
+    PD->>WB: Save outcome
+    WB->>CRM: Update record and retry schedule
+  end

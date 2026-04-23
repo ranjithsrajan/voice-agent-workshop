@@ -1,0 +1,17 @@
+sequenceDiagram
+  autonumber
+  participant NX as Nexus ∞
+  participant L2 as LiveKit / SIP Layer
+  participant AMD as AMD
+  participant C as Cortex ∞ / Pipecat
+  participant PD as Pro Desk Associate
+  participant VM as Voicemail
+
+  NX->>L2: Start outbound call
+  L2->>AMD: Call answered, evaluate answer type
+  AMD-->>L2: Machine detected
+  L2->>NX: Voicemail event
+  NX->>PD: Show voicemail disposition
+  opt voicemail drop allowed
+    NX->>VM: Play voicemail drop
+  end

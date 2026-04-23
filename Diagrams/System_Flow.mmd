@@ -1,0 +1,71 @@
+flowchart LR
+  %% =====================
+  %% SOURCE SYSTEMS
+  %% =====================
+  subgraph CRM[Infinity CRM]
+    A[Lead / Account / Activity Trigger]
+    B[Engagement State + History]
+  end
+
+  %% =====================
+  %% ORCHESTRATION
+  %% =====================
+  subgraph NEXUS[Nexus ∞ — Engagement Orchestrator]
+    C[Prioritize Account]
+    D[Choose Channel]
+    E[Trigger Outbound Call / Follow-up]
+    F[Detect Voicemail / No Answer]
+    G[Log Outcome + Sync CRM]
+  end
+
+  %% =====================
+  %% MEDIA + TELEPHONY
+  %% =====================
+  subgraph MEDIA[Telephony + Media Layer]
+    H[LiveKit SIP Bridge]
+    I[Twilio or Telnyx SIP Trunk]
+    J[PSTN Customer Phone]
+    K[LiveKit WebRTC Room]
+  end
+
+  %% =====================
+  %% AI CONVERSATION
+  %% =====================
+  subgraph AI[Cortex ∞ — Conversation Engine]
+    L[Pipecat]
+    M[Speech-to-Text]
+    N[LLM Reasoning]
+    O[Text-to-Speech]
+  end
+
+  %% =====================
+  %% HUMAN EXPERIENCE
+  %% =====================
+  subgraph AGENT[Agent Experience]
+    P[Real-time Dashboard]
+    Q[Live Transcript]
+    R[Next Best Action]
+    S[Disposition + Notes]
+  end
+
+  %% =====================
+  %% FLOWS
+  %% =====================
+  A --> C
+  B --> C
+  C --> D
+  D --> E
+  E --> H
+  H --> I
+  I --> J
+  J --> H
+  H --> K
+  K --> L
+  L --> M --> N --> O --> K
+  L --> P
+  L --> Q
+  L --> R
+  F --> G
+  S --> G
+  P --> S
+  G --> B

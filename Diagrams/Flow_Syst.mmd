@@ -1,0 +1,42 @@
+flowchart LR
+
+  %% WORKBENCH / CRM
+  subgraph WB[Workbench / Infinity CRM]
+    A[Accounts to Contact]
+    B[Customer Profile & Conversation Guide]
+    C[Log Interaction]
+  end
+
+  %% ORCHESTRATOR
+  subgraph NX[Nexus ∞]
+    D[Pull Accounts]
+    E[Trigger Engagement]
+    F[Update Engagement]
+  end
+
+  %% TELEPHONY
+  subgraph TEL[Telephony Layer]
+    G[LiveKit SIP]
+    H[Twilio / Telnyx]
+    I[Customer Phone]
+  end
+
+  %% AI
+  subgraph AI[Cortex ∞]
+    J[Process Conversation]
+  end
+
+  %% FLOW
+  A --> D
+  D --> E
+  E --> G
+  G --> H
+  H --> I
+
+  I --> G
+  G --> J
+  J --> F
+
+  F --> C
+  C --> B
+  B --> A

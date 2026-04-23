@@ -1,0 +1,34 @@
+flowchart TB
+  subgraph L1[Layer 1 — Infinity CRM]
+    L1A[Lead / Account / Promo data]
+    L1B[Campaign trigger]
+    L1C[Engagement history]
+  end
+
+  subgraph L2[Layer 2 — Infinity Nexus + LiveKit]
+    L2A[Compliance gate]
+    L2B[Call orchestration]
+    L2C[Carrier bridge: SIP / PSTN / WebRTC]
+    L2D[Noise suppression + echo cancellation]
+    L2E[LiveKit room + media routing]
+  end
+
+  subgraph L3[Layer 3 — Infinity Cortex + Pipecat]
+    L3A[VAD / turn detection]
+    L3B[STT]
+    L3C[LLM reasoning]
+    L3D[TTS]
+    L3E[Conversation events]
+  end
+
+  L4[Layer 4 — Customer phone / browser]
+
+  L1A --> L2A
+  L1B --> L2B
+  L1C --> L2B
+  L2B --> L2C --> L2E
+  L2D --> L2E
+  L4 <--> L2E
+  L2E <--> L3A
+  L3A --> L3B --> L3C --> L3D --> L2E
+  L3E --> L2B

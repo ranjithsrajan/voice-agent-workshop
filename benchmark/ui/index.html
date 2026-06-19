@@ -1,0 +1,2453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Voice Agent Benchmark</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/3.0.3/jspdf.umd.min.js"></script>
+  <style>
+    /* ── Lowe's Pro Selling Portal Theme ── */
+    :root {
+      --lowes-blue: #004990;
+      --lowes-dark: #012169;
+      --lowes-navy: #001A3A;
+      --lowes-accent: #2B7DE9;
+      --lowes-gold: #FFD100;
+      --lowes-light: #EDF2F7;
+      --bg-main: #F0F2F5;
+      --bg-card: #FFFFFF;
+      --border: #E2E8F0;
+      --border-light: #EDF2F7;
+      --text-primary: #1A202C;
+      --text-secondary: #4A5568;
+      --text-muted: #718096;
+      --nemo-green: #76b900;
+      --deep-blue: #2B7DE9;
+    }
+    * { box-sizing: border-box; }
+    body { background: var(--bg-main); color: var(--text-primary); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; margin: 0; }
+
+    /* Cards */
+    .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+    .card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+
+    /* Buttons */
+    .btn-nemo { background: var(--nemo-green); color: #fff; border: none; transition: all 0.15s; }
+    .btn-nemo:hover:not(:disabled) { background: #8dd100; transform: translateY(-1px); }
+    .btn-deep { background: var(--lowes-blue); color: #fff; border: none; transition: all 0.15s; }
+    .btn-deep:hover:not(:disabled) { background: #0058B0; transform: translateY(-1px); }
+    .btn-danger { background: #E53E3E; color: #fff; border: none; }
+    .btn-danger:hover { background: #C53030; }
+    .btn-disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-primary { background: var(--lowes-blue); color: #fff; border: none; transition: all 0.15s; }
+    .btn-primary:hover { background: #0058B0; }
+
+    .stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+    .nemo-color { color: #558B00; }
+    .deep-color { color: var(--lowes-blue); }
+
+    /* Tabs — pill style like Lowe's portal */
+    .tab-bar { display: flex; gap: 6px; padding: 4px; background: #fff; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 24px; }
+    .tab-pill { padding: 8px 18px; border-radius: 6px; font-size: 13px; font-weight: 500; color: var(--text-secondary); background: transparent; border: none; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+    .tab-pill:hover { background: var(--lowes-light); color: var(--text-primary); }
+    .tab-pill.tab-active { background: var(--lowes-blue); color: #fff; font-weight: 600; box-shadow: 0 1px 3px rgba(0,73,144,0.3); }
+    .tab-pill.tab-active:hover { background: #0058B0; }
+
+    canvas { max-height: 300px; }
+    @keyframes pulse-dot { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+    .pulse-dot { animation: pulse-dot 1.5s infinite; }
+    .scenario-box { background: var(--lowes-light); border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+
+    /* Log panel */
+    .log-panel { background: var(--lowes-navy); border: 1px solid #1E293B; border-radius: 8px; font-family: 'SF Mono','Menlo','Monaco','Consolas',monospace; font-size: 11px; line-height: 1.6; overflow-y: auto; overflow-x: hidden; max-height: 400px; padding: 14px; color: #CBD5E1; scroll-behavior: smooth; min-width: 0; }
+    .log-entry { padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.04); display: flex; gap: 8px; align-items: flex-start; }
+    .log-entry:last-child { border-bottom: none; }
+    .log-ts { color: #475569; font-size: 10px; white-space: nowrap; min-width: 58px; padding-top: 1px; }
+    .log-badge { font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 3px; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.5px; }
+    .log-badge-info { background: #0C4A6E; color: #7DD3FC; }
+    .log-badge-warn { background: #713F12; color: #FDE68A; }
+    .log-badge-err  { background: #7F1D1D; color: #FCA5A5; }
+    .log-badge-ok   { background: #14532D; color: #86EFAC; }
+    .log-msg { flex: 1; word-break: break-word; }
+    .log-entry-header { background: rgba(43,125,233,0.12); border-left: 3px solid #2B7DE9; border-radius: 0 6px 6px 0; padding: 6px 10px; margin: 6px 0; display: block; color: #93C5FD; font-weight: 600; overflow-wrap: anywhere; word-break: break-word; }
+    .log-entry-typing { background: rgba(118,185,0,0.08); border-left: 3px solid #76b900; border-radius: 0 6px 6px 0; padding: 6px 10px; margin: 3px 0; display: block; overflow-wrap: anywhere; word-break: break-word; }
+    .log-entry-typing .log-prompt-label { color: #76b900; font-weight: 700; font-size: 10px; }
+    .log-entry-typing .log-prompt-text { color: #E2E8F0; margin-top: 2px; white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word; }
+    .log-entry-result { background: rgba(139,92,246,0.08); border-left: 3px solid #8B5CF6; border-radius: 0 6px 6px 0; padding: 8px 10px; margin: 6px 0; display: block; overflow-wrap: anywhere; word-break: break-word; }
+    .log-entry-result pre { color: #C4B5FD; font-size: 10px; white-space: pre-wrap; margin: 4px 0 0; }
+    .log-entry-done { background: rgba(34,197,94,0.1); border-left: 3px solid #22C55E; border-radius: 0 6px 6px 0; padding: 6px 10px; margin: 6px 0; display: block; color: #86EFAC; font-weight: 600; overflow-wrap: anywhere; word-break: break-word; }
+    .log-entry-error { background: rgba(239,68,68,0.1); border-left: 3px solid #EF4444; border-radius: 0 6px 6px 0; padding: 6px 10px; margin: 3px 0; display: block; color: #FCA5A5; overflow-wrap: anywhere; word-break: break-word; }
+    .log-entry-wait { color: #64748B; font-style: italic; padding: 3px 0; display: block; }
+
+    .info-tip { background: #FEFCE8; border-left: 3px solid var(--lowes-gold); padding: 10px 14px; border-radius: 0 8px 8px 0; margin-top: 8px; }
+    .gauge-ring { transition: stroke-dashoffset 0.6s ease; }
+    .metric-explain { font-size: 11px; color: var(--text-muted); margin-top: 6px; line-height: 1.4; }
+    .benchmark-ref { color: var(--lowes-blue); font-weight: 600; }
+
+    /* Collapsible sections */
+    .section-header { cursor: pointer; user-select: none; display: flex; align-items: center; justify-content: space-between; padding: 10px 0; }
+    .section-header:hover .section-title { color: var(--lowes-blue); }
+    .chevron { transition: transform 0.2s ease; font-size: 12px; color: var(--text-muted); }
+    .chevron.open { transform: rotate(90deg); }
+    .section-body { transition: max-height 0.3s ease, opacity 0.2s ease; overflow: hidden; }
+    .section-body.collapsed { max-height: 0 !important; opacity: 0; margin: 0 !important; padding-top: 0 !important; padding-bottom: 0 !important; }
+
+    /* Live voice agent */
+    .waveform-canvas { width: 100%; height: 80px; border-radius: 8px; background: var(--lowes-navy); border: 1px solid #2D3748; }
+    .transcript-panel { background: var(--lowes-light); border: 1px solid var(--border); border-radius: 8px; max-height: 240px; overflow-y: auto; padding: 12px; }
+    .transcript-bubble { padding: 6px 10px; border-radius: 8px; margin-bottom: 6px; font-size: 12px; line-height: 1.4; max-width: 85%; }
+    .transcript-user { background: #E2E8F0; color: var(--text-primary); margin-left: auto; text-align: right; }
+    .transcript-agent { background: #DBEAFE; color: var(--lowes-dark); }
+
+    /* Winner badges */
+    .winner-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+    .winner-nemo { background: rgba(118,185,0,0.1); border: 1px solid rgba(118,185,0,0.3); color: #558B00; }
+    .winner-deep { background: rgba(0,73,144,0.08); border: 1px solid rgba(0,73,144,0.25); color: var(--lowes-blue); }
+    .winner-tie { background: rgba(74,85,104,0.08); border: 1px solid rgba(74,85,104,0.2); color: var(--text-muted); }
+
+    /* Live metric pills */
+    .live-metric-pill { display: inline-flex; align-items: center; gap: 4px; background: var(--lowes-light); border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px; font-size: 11px; }
+    .live-metric-pill .label { color: var(--text-muted); }
+    .live-metric-pill .value { color: var(--text-primary); font-weight: 600; font-variant-numeric: tabular-nums; }
+    @keyframes recording-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(220,38,38,0.4)} 50%{box-shadow:0 0 0 8px rgba(220,38,38,0)} }
+    .recording-indicator { width: 10px; height: 10px; border-radius: 50%; background: #DC2626; animation: recording-pulse 1.5s infinite; }
+
+    /* Lowe's header bar — full-width dark navy like portal */
+    .lowes-topbar { background: var(--lowes-navy); color: #fff; padding: 0; margin: 0; }
+    .lowes-topbar-inner { max-width: 80rem; margin: 0 auto; padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; }
+    .lowes-topbar h1 { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
+    .lowes-topbar .subtitle { color: rgba(255,255,255,0.6); font-size: 12px; margin-top: 2px; }
+    .lowes-topbar .topbar-actions { display: flex; gap: 8px; align-items: center; }
+    .lowes-topbar .topbar-btn { padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 500; border: 1px solid rgba(255,255,255,0.2); background: transparent; color: #fff; cursor: pointer; transition: all 0.15s; }
+    .lowes-topbar .topbar-btn:hover { background: rgba(255,255,255,0.1); }
+    .lowes-topbar .topbar-btn-danger { border-color: #FC8181; color: #FEB2B2; }
+    .lowes-topbar .topbar-btn-danger:hover { background: rgba(220,38,38,0.2); }
+    .lowes-topbar .gold-accent { background: var(--lowes-gold); color: var(--lowes-navy); border: none; font-weight: 600; }
+    .lowes-topbar .gold-accent:hover { background: #E6BC00; }
+
+    /* Section titles */
+    .section-title { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.6px; }
+
+    /* Table styling */
+    thead { background: var(--lowes-blue) !important; }
+    thead th { color: #fff !important; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+    tbody tr { border-bottom: 1px solid var(--border-light); }
+    tbody tr:hover { background: #F7FAFC; }
+
+    /* Select / input styling */
+    select, input[type="number"] { background: #fff !important; border: 1px solid var(--border) !important; color: var(--text-primary) !important; border-radius: 6px; font-size: 13px; }
+    select:focus, input[type="number"]:focus { outline: 2px solid var(--lowes-accent); border-color: var(--lowes-accent) !important; }
+
+    /* Page-level breadcrumb bar */
+    .page-breadcrumb { background: #fff; border-bottom: 1px solid var(--border); padding: 10px 0; margin-bottom: 0; }
+    .page-breadcrumb-inner { max-width: 80rem; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted); }
+    .page-breadcrumb-inner a { color: var(--lowes-blue); text-decoration: none; font-weight: 500; }
+    .page-breadcrumb-inner a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body class="min-h-screen">
+  <!-- ── Full-width dark navy top bar ── -->
+  <div class="lowes-topbar">
+    <div class="lowes-topbar-inner">
+      <div style="display:flex;align-items:center;gap:16px;">
+        <img src="https://www.lowescdn.com/images/logos/Lowes_logo_pms_280.png" alt="Lowe's" style="height:40px;filter:brightness(0) invert(1);" />
+        <div>
+          <h1>Voice Agent Benchmark</h1>
+          <p class="subtitle">Compare NVIDIA Nemotron vs Deepgram + OpenAI performance</p>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <button onclick="clearTelemetry()" class="topbar-btn topbar-btn-danger">Clear All Data</button>
+        <button onclick="refreshAll()" class="topbar-btn gold-accent">Refresh</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="app" class="max-w-7xl mx-auto px-6 py-6">
+    <!-- Tabs — pill style -->
+    <div class="tab-bar">
+      <button id="tab-harness" onclick="switchTab('harness')" class="tab-pill tab-active">Test Harness</button>
+      <button id="tab-asr" onclick="switchTab('asr')" class="tab-pill">ASR Evaluation</button>
+      <button id="tab-dashboard" onclick="switchTab('dashboard')" class="tab-pill">Dashboard</button>
+      <button id="tab-trends" onclick="switchTab('trends')" class="tab-pill">Trends</button>
+      <button id="tab-usage" onclick="switchTab('usage')" class="tab-pill">Usage</button>
+      <button id="tab-runs" onclick="switchTab('runs')" class="tab-pill">Run History</button>
+    </div>
+
+    <!-- Active Runs (collapsible, always visible below tabs) -->
+    <div class="card mb-4">
+      <div class="section-header px-5 py-3" onclick="toggleSection('active-runs')">
+        <div class="flex items-center gap-2">
+          <span id="active-runs-dot" class="w-2 h-2 rounded-full bg-gray-300"></span>
+          <h3 class="text-xs font-semibold text-gray-600 uppercase tracking-wider">Active Runs</h3>
+          <span id="active-runs-count" class="text-[10px] px-1.5 py-0.5 rounded-full bg-gray-100 text-gray-500 font-medium">0</span>
+        </div>
+        <span id="chevron-active-runs" class="chevron open">&#9654;</span>
+      </div>
+      <div id="section-active-runs" class="section-body px-5 pb-4" style="max-height:500px;opacity:1;">
+        <div id="running-list" class="text-sm text-gray-500">No active runs</div>
+      </div>
+    </div>
+
+    <!-- ═══════════ TEST HARNESS PANEL ═══════════ -->
+    <div id="panel-harness">
+
+      <!-- ── COLLAPSIBLE: Manual Voice Run ── -->
+      <div class="mb-6">
+        <div class="section-header mb-3" onclick="toggleSection('manual')">
+          <h3 class="section-title text-sm font-semibold text-gray-500 uppercase tracking-wider">Manual Voice Run</h3>
+          <span id="chevron-manual" class="chevron open">&#9654;</span>
+        </div>
+        <div id="section-manual" class="section-body" style="max-height:2000px;opacity:1;">
+          <p class="text-xs text-gray-500 mb-4">Connect to a live voice agent directly from your browser. Speak via microphone, see real-time audio waveforms, transcripts, and per-turn metrics.</p>
+          <!-- Provider selection row -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+            <div class="card p-5" id="card-nemo">
+              <div class="flex items-center gap-3 mb-2">
+                <div id="dot-nemo" class="w-3 h-3 rounded-full bg-[#76b900]"></div>
+                <h2 class="text-base font-semibold text-gray-900">NVIDIA Nemotron</h2>
+              </div>
+              <p class="text-xs text-gray-500 mb-3"><strong>STT:</strong> NVIDIA Parakeet (NIM) &bull; <strong>LLM:</strong> Llama 3.3 Nemotron Super 49B &bull; <strong>TTS:</strong> OpenAI Nova &bull; <strong>ASR:</strong> Parakeet CTC 1.1B &bull; <strong>VAD:</strong> Silero VAD</p>
+              <div class="flex items-center gap-3" id="nemo-actions">
+                <button id="btn-nemo-start" onclick="startRun('nemo')" class="btn-nemo px-4 py-2 rounded-lg font-semibold text-sm">Start Run</button>
+                <button id="btn-nemo-live" onclick="startLiveRun('nemo')" class="px-4 py-2 rounded-lg font-semibold text-sm bg-emerald-600 hover:bg-emerald-500 text-white">Live Voice</button>
+              </div>
+              <p id="nemo-status" class="text-xs text-gray-500 mt-2"></p>
+            </div>
+            <div class="card p-5" id="card-deep">
+              <div class="flex items-center gap-3 mb-2">
+                <div id="dot-deep" class="w-3 h-3 rounded-full bg-[#004990]"></div>
+                <h2 class="text-base font-semibold text-gray-900">Deepgram + OpenAI</h2>
+              </div>
+              <p class="text-xs text-gray-500 mb-3"><strong>STT:</strong> Deepgram Nova-3 &bull; <strong>LLM:</strong> GPT-4o-mini &bull; <strong>TTS:</strong> OpenAI Nova &bull; <strong>ASR:</strong> Nova-3 Streaming &bull; <strong>VAD:</strong> Silero VAD</p>
+              <div class="flex items-center gap-3" id="deep-actions">
+                <button id="btn-deep-start" onclick="startRun('deep')" class="btn-deep px-4 py-2 rounded-lg font-semibold text-sm">Start Run</button>
+                <button id="btn-deep-live" onclick="startLiveRun('deep')" class="px-4 py-2 rounded-lg font-semibold text-sm bg-emerald-600 hover:bg-emerald-500 text-white">Live Voice</button>
+              </div>
+              <p id="deep-status" class="text-xs text-gray-500 mt-2"></p>
+            </div>
+          </div>
+
+          <!-- Live Voice Agent Panel (hidden until a live session starts) -->
+          <div id="live-voice-panel" class="hidden mb-4">
+            <div class="card p-5">
+              <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                  <div class="recording-indicator"></div>
+                  <span id="live-session-label" class="text-sm font-semibold text-gray-900">Live Session</span>
+                  <span id="live-provider-badge" class="text-xs px-2 py-0.5 rounded font-medium"></span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <button id="enable-audio-btn" onclick="if(lkRoom){lkRoom.startAudio();}" class="hidden px-4 py-1.5 rounded-lg font-semibold text-xs bg-amber-500 hover:bg-amber-400 text-white animate-pulse">Click to Enable Audio</button>
+                  <span id="live-duration" class="text-xs text-gray-500 font-mono">00:00</span>
+                  <button id="btn-live-stop" onclick="stopLiveRun()" class="btn-danger px-4 py-1.5 rounded-lg font-semibold text-xs">End Call</button>
+                </div>
+              </div>
+
+              <!-- Audio Waveforms -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <p class="text-[10px] text-gray-500 mb-1 uppercase tracking-wider">Your Audio (Microphone)</p>
+                  <canvas id="waveform-user" class="waveform-canvas"></canvas>
+                </div>
+                <div>
+                  <p class="text-[10px] text-gray-500 mb-1 uppercase tracking-wider">Agent Audio (Speaker)</p>
+                  <canvas id="waveform-agent" class="waveform-canvas"></canvas>
+                </div>
+              </div>
+
+              <!-- Live Metrics Ticker -->
+              <div id="live-metrics-bar" class="flex flex-wrap gap-2 mb-4">
+                <div class="live-metric-pill"><span class="label">TTFT</span><span class="value" id="lm-ttft">—</span></div>
+                <div class="live-metric-pill"><span class="label">TPS</span><span class="value" id="lm-tps">—</span></div>
+                <div class="live-metric-pill"><span class="label">EOU</span><span class="value" id="lm-eou">—</span></div>
+                <div class="live-metric-pill"><span class="label">TTS TTFB</span><span class="value" id="lm-tts">—</span></div>
+                <div class="live-metric-pill"><span class="label">TTFA</span><span class="value" id="lm-ttfa">—</span></div>
+                <div class="live-metric-pill"><span class="label">Turn RTT</span><span class="value" id="lm-rtt">—</span></div>
+                <div class="live-metric-pill"><span class="label">Turns</span><span class="value" id="lm-turns">0</span></div>
+              </div>
+
+              <!-- Transcript Panel -->
+              <p class="text-[10px] text-gray-500 mb-1 uppercase tracking-wider">Conversation Transcript</p>
+              <div id="live-transcript" class="transcript-panel">
+                <p class="text-gray-400 text-xs">Waiting for conversation to start...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── COLLAPSIBLE: Simulated Benchmark ── -->
+      <div class="mb-6">
+        <div class="section-header mb-3" onclick="toggleSection('sim')">
+          <h3 class="section-title text-sm font-semibold text-gray-500 uppercase tracking-wider">Simulated Benchmark (Automated)</h3>
+          <span id="chevron-sim" class="chevron open">&#9654;</span>
+        </div>
+        <div id="section-sim" class="section-body" style="max-height:2000px;opacity:1;">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Left: Config -->
+            <div class="card p-6">
+              <p class="text-sm text-gray-600 mb-3">Run automated conversations with predefined prompts. No microphone needed.</p>
+              <div class="flex items-center gap-4 flex-wrap mb-4">
+                <div class="flex items-center gap-2">
+                  <label class="text-sm text-gray-600">Scenario:</label>
+                  <select id="sim-scenario" class="px-3 py-2 rounded-lg text-sm" onchange="updateScenarioPreview()">
+                    <option value="order_status">Order Status + Refrigerator Offers (6 prompts)</option>
+                    <option value="product_return">Product Return + Exchange (7 prompts)</option>
+                    <option value="appliance_install">Appliance Installation Inquiry (7 prompts)</option>
+                    <option value="paint_guidance">Paint Selection + Color Guidance (7 prompts)</option>
+                    <option value="flooring_consult">Flooring Consultation (7 prompts)</option>
+                  </select>
+                </div>
+              </div>
+              <div id="scenario-preview" class="scenario-box mb-4">
+                <p id="scenario-preview-title" class="text-xs font-semibold text-gray-600 mb-1">Customer checks order status and asks about refrigerator deals.</p>
+              </div>
+              <div class="flex items-center gap-4 flex-wrap">
+                <div class="flex items-center gap-2">
+                  <label class="text-sm text-gray-600">Provider:</label>
+                  <select id="sim-provider" class="px-3 py-2 rounded-lg text-sm">
+                    <option value="both">Both (Nemo + Deep)</option>
+                    <option value="nemo">Nemotron only</option>
+                    <option value="deep">Deepgram only</option>
+                  </select>
+                </div>
+                <div class="flex items-center gap-2">
+                  <label class="text-sm text-gray-600">Runs each:</label>
+                  <input id="sim-runs" type="number" min="1" max="10" value="2" class="w-16 px-3 py-2 rounded-lg text-sm" />
+                </div>
+                <div class="flex items-center gap-2">
+                  <label for="sim-mute" class="text-sm text-gray-600 cursor-pointer flex items-center gap-1.5">
+                    <input id="sim-mute" type="checkbox" checked class="w-4 h-4 rounded accent-blue-600 cursor-pointer" />
+                    <span>🔇 Mute Mic</span>
+                  </label>
+                  <span class="text-[10px] text-gray-400" title="Disables microphone input during simulation to prevent the STT engine from picking up TTS audio loopback or ambient noise">&#9432;</span>
+                </div>
+                <button id="btn-simulate" onclick="startSimulation()" class="btn-primary px-5 py-2 rounded-lg font-semibold text-sm">Run Simulation</button>
+              </div>
+              <p id="sim-status" class="text-sm text-gray-500 mt-3"></p>
+            </div>
+            <!-- Right: Live Log -->
+            <div class="card p-6">
+              <div class="flex items-center justify-between mb-3">
+                <h4 class="text-sm font-semibold text-gray-900">Live Simulation Log</h4>
+                <div class="flex items-center gap-2">
+                  <span id="mic-status-badge" class="hidden text-xs px-2 py-0.5 rounded font-semibold" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca">🔇 Mic Muted</span>
+                  <span id="log-status-badge" class="text-xs px-2 py-0.5 rounded bg-gray-100 text-gray-500 border border-gray-200">Idle</span>
+                </div>
+              </div>
+              <div id="sim-log" class="log-panel">
+                <div class="log-entry-wait">Waiting for simulation to start...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ═══════════ DASHBOARD PANEL ═══════════ -->
+    <div id="panel-dashboard" class="hidden">
+      <!-- Date Filter & Actions Bar -->
+      <div class="flex items-center justify-between flex-wrap gap-3 mb-6">
+        <div class="flex items-center gap-3 flex-wrap">
+          <label class="text-xs text-gray-500 font-semibold uppercase tracking-wider">Filter by Date:</label>
+          <input id="filter-date-from" type="date" class="px-3 py-1.5 rounded-lg text-sm border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none" />
+          <span class="text-xs text-gray-400">to</span>
+          <input id="filter-date-to" type="date" class="px-3 py-1.5 rounded-lg text-sm border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none" />
+          <button onclick="applyDateFilter()" class="btn-primary px-4 py-1.5 rounded-lg text-xs font-semibold">Apply</button>
+          <button onclick="clearDateFilter()" class="px-4 py-1.5 rounded-lg text-xs font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 border border-gray-300">Clear</button>
+        </div>
+        <button id="btn-download-pdf" onclick="downloadPdfReport()" class="flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-semibold text-white bg-red-600 hover:bg-red-500 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download PDF Report
+        </button>
+      </div>
+
+      <!-- Summary Stats -->
+      <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Key Performance Summary (Averages)</h3>
+      <div id="summary-stats" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8"></div>
+
+      <!-- WER Section (moved up for prominence) -->
+      <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">STT Word Error Rate (WER)</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="card p-6">
+          <h4 class="text-sm font-semibold text-gray-700 mb-1">WER by Provider</h4>
+          <p class="metric-explain">Word Error Rate measures STT accuracy by comparing transcripts against reference text. <span class="benchmark-ref">Industry target: &lt;10% (0.10)</span>. Lower is better. WER = (Substitutions + Deletions + Insertions) / Reference Words.</p>
+          <div id="winner-wer" class="mt-2"></div>
+          <div id="wer-summary" class="mt-4"></div>
+        </div>
+        <div class="card p-6">
+          <h4 class="text-sm font-semibold text-gray-700 mb-1">WER Per-Utterance Breakdown</h4>
+          <p class="metric-explain">Detailed WER for each simulated prompt. Helps identify which utterances are harder for each STT engine.</p>
+          <div id="wer-detail" class="mt-4 max-h-80 overflow-y-auto"></div>
+        </div>
+      </div>
+
+      <!-- Interruption / Turns / Session summary -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="card p-6 text-center">
+          <p class="text-xs text-gray-500 mb-2">Interruption Rate</p>
+          <div id="interruption-display"></div>
+          <div id="winner-interruption" class="mt-2"></div>
+          <p class="metric-explain mt-2">Percentage of turns where user interrupted the agent (barge-in). <span class="benchmark-ref">Target: &lt;15%</span>. High rates suggest the agent speaks too long or is too slow.</p>
+        </div>
+        <div class="card p-6 text-center">
+          <p class="text-xs text-gray-500 mb-2">Avg Turns per Session</p>
+          <div id="turns-display"></div>
+          <p class="metric-explain mt-2">Average number of conversation turns per session. Consistent turn counts across providers indicate comparable conversation flow.</p>
+        </div>
+        <div class="card p-6 text-center">
+          <p class="text-xs text-gray-500 mb-2">Avg Session Duration</p>
+          <div id="session-dur-display"></div>
+          <div id="winner-session-dur" class="mt-2"></div>
+          <p class="metric-explain mt-2">Average total session time. Shorter with same task completion = more efficient agent.</p>
+        </div>
+      </div>
+
+      <!-- Metric Charts with explanations -->
+      <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Latency Metrics</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="card p-6">
+          <h3 class="text-sm font-semibold text-gray-700 mb-1">LLM Time to First Token (seconds)</h3>
+          <p class="metric-explain">Time from sending the prompt until the first token arrives. <span class="benchmark-ref">Industry target: &lt;0.5s</span>. Lower is better &mdash; directly impacts perceived responsiveness.</p>
+          <div id="winner-ttft" class="mt-2"></div>
+          <canvas id="chart-ttft" class="mt-3"></canvas>
+          <div class="info-tip mt-3">
+            <p class="text-xs text-gray-500"><strong>How to read:</strong> Compare Avg and P95 bars. A large gap between P50 and P95 indicates inconsistent latency. Look for the shorter bars &mdash; that provider responds faster.</p>
+          </div>
+        </div>
+        <div class="card p-6">
+          <h3 class="text-sm font-semibold text-gray-700 mb-1">LLM Tokens per Second</h3>
+          <p class="metric-explain">Speed of token generation after the first token. <span class="benchmark-ref">Industry target: &gt;30 tok/s</span>. Higher is better &mdash; affects how quickly the full response streams to TTS.</p>
+          <div id="winner-tps" class="mt-2"></div>
+          <canvas id="chart-tps" class="mt-3"></canvas>
+          <div class="info-tip mt-3">
+            <p class="text-xs text-gray-500"><strong>How to read:</strong> Taller bars = faster generation. A consistent Min close to Avg means stable throughput. Large Avg-to-Min spread indicates throttling or cold starts.</p>
+          </div>
+        </div>
+        <div class="card p-6">
+          <h3 class="text-sm font-semibold text-gray-700 mb-1">End-of-Utterance Delay (seconds)</h3>
+          <p class="metric-explain">Delay from when the user stops speaking to when the system detects end-of-utterance. <span class="benchmark-ref">Industry target: &lt;0.5s</span>. Lower is better &mdash; long delays feel laggy to callers.</p>
+          <div id="winner-eou" class="mt-2"></div>
+          <canvas id="chart-eou" class="mt-3"></canvas>
+          <div class="info-tip mt-3">
+            <p class="text-xs text-gray-500"><strong>How to read:</strong> This reflects VAD + STT pipeline latency. Compare P95 to see worst-case pauses. Values &gt;1s may indicate the turn detector is too conservative.</p>
+          </div>
+        </div>
+        <div class="card p-6">
+          <h3 class="text-sm font-semibold text-gray-700 mb-1">Time to First Audio (seconds)</h3>
+          <p class="metric-explain">Total time from end-of-utterance to when the user first hears the agent's response. <span class="benchmark-ref">Industry target: &lt;1.0s</span>. This is the most important metric for perceived latency.</p>
+          <div id="winner-ttfa" class="mt-2"></div>
+          <canvas id="chart-ttfa" class="mt-3"></canvas>
+          <div class="info-tip mt-3">
+            <p class="text-xs text-gray-500"><strong>How to read:</strong> TTFA = EOU delay + LLM TTFT + TTS TTFB. This is the "end-to-end" user experience metric. Compare Avg bars to see overall winner.</p>
+          </div>
+        </div>
+        <div class="card p-6">
+          <h3 class="text-sm font-semibold text-gray-700 mb-1">TTS Time to First Byte (seconds)</h3>
+          <p class="metric-explain">Time for the TTS engine to return the first audio chunk after receiving text. <span class="benchmark-ref">Industry target: &lt;0.3s</span>. Lower is better &mdash; contributes to overall TTFA.</p>
+          <div id="winner-tts" class="mt-2"></div>
+          <canvas id="chart-tts" class="mt-3"></canvas>
+          <div class="info-tip mt-3">
+            <p class="text-xs text-gray-500"><strong>How to read:</strong> Since both providers use OpenAI Nova TTS in this benchmark, values should be similar. Differences indicate network or queuing variations.</p>
+          </div>
+        </div>
+        <div class="card p-6">
+          <h3 class="text-sm font-semibold text-gray-700 mb-1">STT Transcription Delay (seconds)</h3>
+          <p class="metric-explain">Time from end-of-utterance to when the final transcript is available. <span class="benchmark-ref">Industry target: &lt;0.4s</span>. Lower is better &mdash; Parakeet (NVIDIA) vs Nova (Deepgram) comparison.</p>
+          <div id="winner-stt" class="mt-2"></div>
+          <canvas id="chart-stt" class="mt-3"></canvas>
+          <div class="info-tip mt-3">
+            <p class="text-xs text-gray-500"><strong>How to read:</strong> Compares raw STT performance. Deepgram typically has lower latency due to edge-optimized models. NVIDIA Parakeet may have higher accuracy trade-offs.</p>
+          </div>
+        </div>
+        <div class="card p-6">
+          <h3 class="text-sm font-semibold text-gray-700 mb-1">Turn Round-Trip Time (seconds)</h3>
+          <p class="metric-explain">Full time from when the user stops speaking to when the agent starts speaking. <span class="benchmark-ref">Industry target: &lt;1.5s</span>. Lower is better &mdash; measures the complete pipeline delay per conversation turn.</p>
+          <div id="winner-turn-rtt" class="mt-2"></div>
+          <canvas id="chart-turn-rtt" class="mt-3"></canvas>
+          <div class="info-tip mt-3">
+            <p class="text-xs text-gray-500"><strong>How to read:</strong> Turn RTT captures the entire processing chain (VAD + STT + LLM + TTS). This is the most holistic latency metric. Compare P95 to understand worst-case user experience.</p>
+          </div>
+        </div>
+        <div class="card p-6">
+          <h3 class="text-sm font-semibold text-gray-700 mb-1">Session Duration (seconds)</h3>
+          <p class="metric-explain">Total wall-clock time for each agent session. <span class="benchmark-ref">Benchmark: varies by scenario</span>. Consistent durations indicate stable performance; large variance may signal timeouts or errors.</p>
+          <div id="winner-session" class="mt-2"></div>
+          <canvas id="chart-session" class="mt-3"></canvas>
+          <div class="info-tip mt-3">
+            <p class="text-xs text-gray-500"><strong>How to read:</strong> Compare session lengths across providers. Shorter sessions with the same scenario may indicate faster responses. Outliers suggest connectivity or processing issues.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ═══════════ TRENDS PANEL ═══════════ -->
+    <div id="panel-trends" class="hidden">
+      <div class="flex items-center gap-4 mb-6 flex-wrap">
+        <div class="flex items-center gap-2">
+          <label class="text-sm text-gray-700">Metric:</label>
+          <select id="trend-metric" onchange="loadTrends()" class="px-3 py-2 rounded-lg text-sm">
+            <option value="all">All Metrics</option>
+            <option value="llm_ttft_avg">LLM TTFT</option>
+            <option value="llm_tps_avg">Tokens/sec</option>
+            <option value="eou_delay_avg">EOU Delay</option>
+            <option value="tts_ttfb_avg">TTS TTFB</option>
+            <option value="ttfa_avg">TTFA</option>
+            <option value="turn_rtt_avg">Turn RTT</option>
+            <option value="wer_avg">WER</option>
+          </select>
+        </div>
+        <div class="flex items-center gap-2">
+          <label class="text-sm text-gray-700">Provider:</label>
+          <select id="trend-provider" onchange="loadTrends()" class="px-3 py-2 rounded-lg text-sm">
+            <option value="both">Both</option>
+            <option value="nemo">Nemotron</option>
+            <option value="deep">Deepgram</option>
+          </select>
+        </div>
+        <button onclick="loadTrends()" class="btn-primary px-4 py-2 rounded-lg text-sm font-medium">Refresh</button>
+      </div>
+      <div id="trend-single" class="card p-6 mb-6">
+        <h3 class="text-sm font-semibold text-gray-700 mb-1">Metric Trend Across Runs</h3>
+        <p class="metric-explain mb-3">Each point represents one run's average value. Track consistency and regressions over time.</p>
+        <canvas id="chart-trend" style="max-height:400px;"></canvas>
+      </div>
+      <div id="trend-all-grid" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6"></div>
+      <div class="info-tip">
+        <p class="text-xs text-gray-500"><strong>How to read:</strong> A flat line indicates consistent performance. Upward trends in latency metrics signal degradation. Compare the two provider lines to see which is more stable.</p>
+      </div>
+    </div>
+
+    <!-- ═══════════ USAGE / GAUGE PANEL ═══════════ -->
+    <div id="panel-usage" class="hidden">
+      <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-6">Context &amp; Token Usage</h3>
+      <div id="usage-gauges" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"></div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="card p-6" id="usage-detail-nemo">
+          <h4 class="text-sm font-semibold nemo-color mb-3">Nemotron Usage Breakdown</h4>
+          <p class="metric-explain mb-3">Cumulative resource usage across all Nemotron runs. Hover over the <span style="cursor:help;color:#94a3b8">&#9432;</span> icon for metric details.</p>
+          <div id="usage-bars-nemo"></div>
+        </div>
+        <div class="card p-6" id="usage-detail-deep">
+          <h4 class="text-sm font-semibold deep-color mb-3">Deepgram + OpenAI Usage Breakdown</h4>
+          <p class="metric-explain mb-3">Cumulative resource usage across all Deepgram runs. Hover over the <span style="cursor:help;color:#94a3b8">&#9432;</span> icon for metric details.</p>
+          <div id="usage-bars-deep"></div>
+        </div>
+      </div>
+      <!-- Cross-Provider Comparison -->
+      <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mt-8 mb-4">Per-Run Comparison (Nemo vs Deep)</h3>
+      <div id="usage-comparison" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6"></div>
+
+      <div class="info-tip mt-6">
+        <p class="text-xs text-gray-500"><strong>About context usage:</strong> Prompt tokens reflect conversation context sent to the LLM. Completion tokens are the LLM's output. TTS characters measure how much text was synthesized to speech. Monitor these to estimate cost and ensure the context window isn't overloaded (Nemotron: 32K, GPT-4o-mini: 128K).</p>
+      </div>
+    </div>
+
+    <!-- ═══════════ RUN HISTORY PANEL ═══════════ -->
+    <div id="panel-runs" class="hidden">
+      <div id="runs-table" class="card overflow-hidden">
+        <table class="w-full text-sm">
+          <thead>
+            <tr>
+              <th class="text-left px-4 py-3 text-gray-700 font-medium">Run ID</th>
+              <th class="text-left px-4 py-3 text-gray-700 font-medium">Provider</th>
+              <th class="text-left px-4 py-3 text-gray-700 font-medium">Metrics</th>
+              <th class="text-left px-4 py-3 text-gray-700 font-medium">Time</th>
+            </tr>
+          </thead>
+          <tbody id="runs-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ═══════════ ASR EVALUATION PANEL ═══════════ -->
+    <div id="panel-asr" class="hidden">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider">ASR Dataset Evaluation</h3>
+        <button id="btn-asr-pdf" onclick="downloadAsrPdfReport()" class="flex items-center gap-2 px-4 py-1.5 rounded-lg text-xs font-semibold text-white bg-red-600 hover:bg-red-500 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download ASR Report
+        </button>
+      </div>
+      <p class="text-sm text-gray-600 mb-6">Run offline STT accuracy tests using standardized text datasets. Reference text is synthesized to audio via TTS, then transcribed by each provider's STT engine. WER is computed against the original reference.</p>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <!-- Left: Config -->
+        <div class="card p-6">
+          <h4 class="text-sm font-semibold text-gray-900 mb-3">Run ASR Evaluation</h4>
+          <div class="flex flex-col gap-3">
+            <div class="flex items-center gap-2">
+              <label class="text-sm text-gray-600 w-20">Dataset:</label>
+              <select id="asr-dataset" class="px-3 py-2 rounded-lg text-sm flex-1">
+                <option value="librispeech_mini">LibriSpeech test-clean (mini) — 10 general sentences</option>
+                <option value="retail_domain">Retail Domain (Lowe's) — 15 retail-specific utterances</option>
+              </select>
+            </div>
+            <div class="flex items-center gap-2">
+              <label class="text-sm text-gray-600 w-20">Provider:</label>
+              <select id="asr-provider" class="px-3 py-2 rounded-lg text-sm">
+                <option value="all">All 3 (Nemo + Deep + Whisper)</option>
+                <option value="both">Nemo + Deepgram</option>
+                <option value="nemo">Nemotron (Parakeet) only</option>
+                <option value="deep">Deepgram (Nova) only</option>
+                <option value="whisper">OpenAI Whisper only</option>
+              </select>
+            </div>
+            <div class="flex items-center gap-2">
+              <label class="text-sm text-gray-600 w-20">Samples:</label>
+              <input id="asr-samples" type="number" min="1" max="15" value="10" class="w-20 px-3 py-2 rounded-lg text-sm" />
+            </div>
+            <button id="btn-asr-run" onclick="startAsrEval()" class="btn-primary px-5 py-2 rounded-lg font-semibold text-sm mt-2">Run Evaluation</button>
+            <p id="asr-status" class="text-sm text-gray-500 mt-1"></p>
+          </div>
+          <div class="mt-4 space-y-2">
+            <div class="scenario-box">
+              <p class="text-xs font-semibold text-gray-700">Metrics Measured</p>
+              <p class="text-xs text-gray-500 mt-1"><strong>WER</strong> (Word Error Rate) • <strong>RTF</strong> (Real-Time Factor) • <strong>Cold Start</strong> (1st inference) • <strong>Warm Latency</strong> (avg subsequent)</p>
+            </div>
+            <div class="info-tip">
+              <p class="text-[10px] text-gray-500"><strong>Methodology:</strong> Reference text → TTS synthesis → STT transcription → WER comparison. RTF &lt; 1.0 = faster than real-time.</p>
+            </div>
+          </div>
+        </div>
+        <!-- Right: Live Log -->
+        <div class="card p-6">
+          <div class="flex items-center justify-between mb-3">
+            <h4 class="text-sm font-semibold text-gray-900">Live ASR Evaluation Log</h4>
+            <span id="asr-log-badge" class="text-xs px-2 py-0.5 rounded bg-gray-100 text-gray-500 border border-gray-200">Idle</span>
+          </div>
+          <div id="asr-log" class="log-panel">
+            <div class="log-entry-wait">Waiting for ASR evaluation to start...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comparison Summary -->
+      <div id="asr-comparison" class="hidden mb-6">
+        <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">Comparison Summary</h3>
+        <div id="asr-winner-cards" class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6"></div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <div class="card p-5">
+            <h4 class="text-sm font-semibold text-gray-900 mb-2">Word Error Rate (WER) by Provider</h4>
+            <canvas id="asr-chart-wer" height="220"></canvas>
+          </div>
+          <div class="card p-5">
+            <h4 class="text-sm font-semibold text-gray-900 mb-2">Real-Time Factor (RTF) by Provider</h4>
+            <canvas id="asr-chart-rtf" height="220"></canvas>
+          </div>
+          <div class="card p-5">
+            <h4 class="text-sm font-semibold text-gray-900 mb-2">Latency: Cold Start vs Warm (ms)</h4>
+            <canvas id="asr-chart-latency" height="220"></canvas>
+          </div>
+          <div class="card p-5">
+            <h4 class="text-sm font-semibold text-gray-900 mb-2">Per-Sample WER Distribution</h4>
+            <canvas id="asr-chart-wer-dist" height="220"></canvas>
+          </div>
+        </div>
+        <!-- Metric Explanations -->
+        <div class="card p-5 mb-6">
+          <h4 class="text-sm font-semibold text-gray-900 mb-3">Understanding the Metrics</h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="scenario-box">
+              <p class="text-xs font-semibold text-gray-700">WER (Word Error Rate)</p>
+              <p class="text-[10px] text-gray-500 mt-1">Measures transcription accuracy. Lower is better. WER = (Substitutions + Deletions + Insertions) / Reference Words. 0% = perfect, &gt;20% = poor.</p>
+            </div>
+            <div class="scenario-box">
+              <p class="text-xs font-semibold text-gray-700">RTF (Real-Time Factor)</p>
+              <p class="text-[10px] text-gray-500 mt-1">Processing time divided by audio duration. RTF &lt; 1.0 means faster than real-time. Lower is better. RTF 0.1 = 10x faster than real-time.</p>
+            </div>
+            <div class="scenario-box">
+              <p class="text-xs font-semibold text-gray-700">Cold Start Latency</p>
+              <p class="text-[10px] text-gray-500 mt-1">Time for the very first inference. Includes model loading, connection setup, and warmup. Typically 2-10x slower than warm latency.</p>
+            </div>
+            <div class="scenario-box">
+              <p class="text-xs font-semibold text-gray-700">Warm Latency</p>
+              <p class="text-[10px] text-gray-500 mt-1">Average time for subsequent inferences after warmup. Represents steady-state performance. This is what users experience in production.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Per-Provider Detail Cards -->
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Detailed Results</h3>
+        <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2">
+            <label class="text-xs text-gray-500">Filter:</label>
+            <select id="asr-filter" onchange="loadAsrResults()" class="px-3 py-1.5 rounded-lg text-xs border border-gray-200">
+              <option value="successful">Successful (with data)</option>
+              <option value="all">All Runs</option>
+              <option value="errors">Errors Only</option>
+            </select>
+          </div>
+          <div class="flex items-center gap-2">
+            <label class="text-xs text-gray-500">Provider:</label>
+            <select id="asr-filter-provider" onchange="loadAsrResults()" class="px-3 py-1.5 rounded-lg text-xs border border-gray-200">
+              <option value="all">All Providers</option>
+              <option value="nemo">Nemotron</option>
+              <option value="deep">Deepgram</option>
+              <option value="whisper">Whisper</option>
+            </select>
+          </div>
+          <span id="asr-result-count" class="text-[10px] text-gray-400"></span>
+        </div>
+      </div>
+      <div id="asr-results" class="space-y-4">
+        <p class="text-sm text-gray-500">No ASR evaluations yet. Run one above.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API = 'http://localhost:8089';
+    let charts = {};
+    let activeProviders = {};
+    let simRunId = null;
+    let simLogInterval = null;
+    let simLogSince = 0;
+
+    // Live voice session state
+    let liveRunId = null;
+    let liveProvider = null;
+    let liveMetricsInterval = null;
+    let liveDurationInterval = null;
+    let liveStartTime = null;
+    let audioContext = null;
+    let micAnalyser = null;
+    let agentAnalyser = null;
+    let micAnimFrame = null;
+    let agentAnimFrame = null;
+    let prevTranscriptCount = 0;
+    let prevMetricCount = 0;
+    let lkRoom = null;  // LiveKit Room instance
+    let agentAudioEl = null; // <audio> element for agent playback
+
+    // ── Collapsible sections ───────────────────────────────────────────────
+    function toggleSection(name) {
+      const body = document.getElementById(`section-${name}`);
+      const chev = document.getElementById(`chevron-${name}`);
+      body.classList.toggle('collapsed');
+      chev.classList.toggle('open');
+    }
+
+    // ── Tab switching ──────────────────────────────────────────────────────
+    function switchTab(tab) {
+      ['harness','dashboard','trends','usage','runs','asr'].forEach(t => {
+        document.getElementById(`panel-${t}`).classList.toggle('hidden', t !== tab);
+        document.getElementById(`tab-${t}`).className = t === tab
+          ? 'tab-pill tab-active'
+          : 'tab-pill';
+      });
+      if (tab === 'dashboard') loadDashboard();
+      if (tab === 'trends') loadTrends();
+      if (tab === 'usage') loadUsage();
+      if (tab === 'runs') loadRuns();
+      if (tab === 'asr') loadAsrResults();
+    }
+
+    // ── Provider card state ────────────────────────────────────────────────
+    function updateProviderCard(provider, isRunning, runId, pid) {
+      const actions = document.getElementById(`${provider}-actions`);
+      const status = document.getElementById(`${provider}-status`);
+      const dot = document.getElementById(`dot-${provider}`);
+      if (isRunning) {
+        activeProviders[provider] = { run_id: runId, pid };
+        dot.classList.add('pulse-dot');
+        const btnCls = provider === 'nemo' ? 'btn-nemo' : 'btn-deep';
+        actions.innerHTML = `
+          <button disabled class="${btnCls} btn-disabled px-4 py-2 rounded-lg font-semibold text-sm">Running...</button>
+          <button onclick="stopRun('${runId}')" class="btn-danger px-4 py-2 rounded-lg font-semibold text-sm">Stop</button>
+          <button id="btn-${provider}-live" onclick="startLiveRun('${provider}')" class="px-4 py-2 rounded-lg font-semibold text-sm bg-emerald-600 hover:bg-emerald-500 text-white">Live Voice</button>`;
+        status.innerHTML = `<span class="text-yellow-600">PID: ${pid}</span> &mdash; <span class="text-gray-500 text-xs">${runId}</span>`;
+      } else {
+        delete activeProviders[provider];
+        dot.classList.remove('pulse-dot');
+        const btnCls = provider === 'nemo' ? 'btn-nemo' : 'btn-deep';
+        actions.innerHTML = `
+          <button id="btn-${provider}-start" onclick="startRun('${provider}')" class="${btnCls} px-4 py-2 rounded-lg font-semibold text-sm">Start Run</button>
+          <button id="btn-${provider}-live" onclick="startLiveRun('${provider}')" class="px-4 py-2 rounded-lg font-semibold text-sm bg-emerald-600 hover:bg-emerald-500 text-white">Live Voice</button>`;
+        status.textContent = '';
+      }
+    }
+
+    // ── Manual runs ────────────────────────────────────────────────────────
+    async function startRun(provider) {
+      if (activeProviders[provider]) return;
+      document.getElementById(`${provider}-status`).textContent = 'Starting...';
+      const btn = document.getElementById(`btn-${provider}-start`);
+      if (btn) { btn.disabled = true; btn.classList.add('btn-disabled'); }
+      try {
+        const res = await fetch(`${API}/api/benchmark/start`, {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ provider }),
+        });
+        const data = await res.json();
+        updateProviderCard(provider, true, data.run_id, data.pid);
+        loadRunning();
+      } catch (e) {
+        document.getElementById(`${provider}-status`).textContent = `Error: ${e.message}`;
+        updateProviderCard(provider, false);
+      }
+    }
+
+    async function stopRun(runId) {
+      try { await fetch(`${API}/api/benchmark/stop/${runId}`, {method:'POST'}); } catch(e) {}
+      loadRunning();
+    }
+
+    async function loadRunning() {
+      try {
+        const res = await fetch(`${API}/api/benchmark/running`);
+        const data = await res.json();
+        const el = document.getElementById('running-list');
+        const entries = Object.entries(data);
+        ['nemo','deep'].forEach(p => {
+          const e = entries.find(([,info]) => info.provider === p && info.mode === 'console');
+          if (e) updateProviderCard(p, true, e[0], e[1].pid);
+          else if (activeProviders[p]) updateProviderCard(p, false);
+        });
+        const dot = document.getElementById('active-runs-dot');
+        const countBadge = document.getElementById('active-runs-count');
+        if (dot) { dot.className = entries.length > 0 ? 'w-2 h-2 rounded-full bg-green-500 pulse-dot' : 'w-2 h-2 rounded-full bg-gray-300'; }
+        if (countBadge) { countBadge.textContent = entries.length; countBadge.className = entries.length > 0 ? 'text-[10px] px-1.5 py-0.5 rounded-full bg-green-100 text-green-700 font-medium' : 'text-[10px] px-1.5 py-0.5 rounded-full bg-gray-100 text-gray-500 font-medium'; }
+        if (entries.length === 0) { el.innerHTML = '<p class="text-gray-500">No active runs</p>'; return; }
+        el.innerHTML = entries.map(([rid, info]) => {
+          const color = info.provider==='nemo'?'nemo-color':(info.provider==='deep'?'deep-color':'text-purple-400');
+          const label = info.provider==='nemo'?'NEMO':(info.provider==='deep'?'DEEP':info.provider.toUpperCase());
+          const badge = info.mode==='simulate'
+            ? '<span class="ml-2 px-2 py-0.5 rounded text-[10px] bg-purple-500/20 text-purple-300">SIM</span>'
+            : info.mode==='live'
+            ? '<span class="ml-2 px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-300">LIVE</span>'
+            : '<span class="ml-2 px-2 py-0.5 rounded text-[10px] bg-gray-200 text-gray-600">CONSOLE</span>';
+          return `<div class="flex items-center justify-between py-2 border-b border-gray-200">
+            <div class="flex items-center"><span class="w-2 h-2 rounded-full bg-green-400 pulse-dot mr-2"></span>
+            <span class="${color} font-medium">${label}</span>${badge}
+            <span class="text-gray-500 ml-3 text-xs">${rid}</span>
+            <span class="text-gray-400 ml-2 text-xs">PID: ${info.pid}</span></div>
+            <button onclick="stopRun('${rid}')" class="px-3 py-1 rounded text-xs btn-danger">Stop</button></div>`;
+        }).join('');
+      } catch(e) {
+        document.getElementById('running-list').innerHTML = '<p class="text-red-400">Server not reachable</p>';
+      }
+    }
+
+    // ── Live Voice Agent (LiveKit SDK) ──────────────────────────────────
+    async function startLiveRun(provider) {
+      if (liveRunId) { alert('A live session is already running. End it first.'); return; }
+      const btn = document.getElementById(`btn-${provider}-live`);
+      if (btn) { btn.disabled = true; btn.textContent = 'Connecting...'; }
+
+      // Pre-warm AudioContext on user gesture to unlock browser audio
+      ensureAudioContext();
+      if (audioContext && audioContext.state === 'suspended') {
+        audioContext.resume();
+      }
+
+      try {
+        // 0. Stop any existing dev-mode process for this provider
+        if (activeProviders[provider]) {
+          await fetch(`${API}/api/benchmark/stop/${activeProviders[provider].run_id}`, {method:'POST'});
+          updateProviderCard(provider, false);
+          await new Promise(r => setTimeout(r, 1000));
+        }
+
+        // 1. Ask server to start agent + get room token
+        const res = await fetch(`${API}/api/benchmark/start-live`, {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ provider }),
+        });
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.detail || 'Failed to start live session');
+        }
+        const data = await res.json();
+        liveRunId = data.run_id;
+        liveProvider = provider;
+
+        // Show the live panel
+        document.getElementById('live-voice-panel').classList.remove('hidden');
+        const badge = document.getElementById('live-provider-badge');
+        badge.textContent = provider === 'nemo' ? 'Nemotron' : 'Deepgram';
+        badge.className = `text-xs px-2 py-0.5 rounded font-medium ${provider==='nemo'?'bg-[#76b900]/20 nemo-color':'bg-blue-500/20 deep-color'}`;
+        document.getElementById('live-session-label').textContent = `Live Session — ${data.run_id}`;
+        document.getElementById('live-transcript').innerHTML = '<p class="text-gray-400 text-xs">Connecting to LiveKit room...</p>';
+        resetLiveMetrics();
+
+        // 2. Connect browser to LiveKit room
+        const LivekitClient = window.LivekitClient;
+        lkRoom = new LivekitClient.Room({
+          adaptiveStream: true,
+          dynacast: true,
+          audioCaptureDefaults: { autoGainControl: true, noiseSuppression: true },
+          audioOutput: { deviceId: 'default' },
+        });
+
+        // Listen for audio playback status changes (browser autoplay policy)
+        lkRoom.on(LivekitClient.RoomEvent.AudioPlaybackStatusChanged, () => {
+          console.log('AudioPlaybackStatusChanged, canPlaybackAudio:', lkRoom.canPlaybackAudio);
+          const enableBtn = document.getElementById('enable-audio-btn');
+          if (!lkRoom.canPlaybackAudio && enableBtn) {
+            enableBtn.classList.remove('hidden');
+          } else if (enableBtn) {
+            enableBtn.classList.add('hidden');
+          }
+        });
+
+        // Listen for agent audio tracks
+        lkRoom.on(LivekitClient.RoomEvent.TrackSubscribed, (track, publication, participant) => {
+          console.log(`Track subscribed: ${track.kind} from ${participant.identity}`);
+          if (track.kind === 'audio') {
+            const el = track.attach();
+            el.id = 'agent-audio-playback';
+            el.autoplay = true;
+            el.volume = 1.0;
+            el.style.position = 'fixed';
+            el.style.bottom = '0';
+            el.style.left = '0';
+            el.style.opacity = '0.01';
+            el.style.pointerEvents = 'none';
+            document.body.appendChild(el);
+            el.play().catch(err => console.warn('Audio play() failed:', err));
+            agentAudioEl = el;
+            setupAgentAudioAnalyser(track.mediaStreamTrack);
+          }
+        });
+
+        lkRoom.on(LivekitClient.RoomEvent.TrackUnsubscribed, (track) => {
+          track.detach().forEach(el => el.remove());
+          if (agentAnimFrame) { cancelAnimationFrame(agentAnimFrame); agentAnimFrame = null; }
+          agentAnalyser = null;
+        });
+
+        lkRoom.on(LivekitClient.RoomEvent.Disconnected, () => {
+          console.log('Disconnected from LiveKit room');
+        });
+
+        // Log all participant events for debugging
+        lkRoom.on(LivekitClient.RoomEvent.ParticipantConnected, (p) => {
+          console.log('Participant connected:', p.identity);
+        });
+
+        // Convert ws:// or wss:// URL for connection
+        let wsUrl = data.livekit_url;
+        // Wait a moment for the agent to register
+        await new Promise(r => setTimeout(r, 3000));
+
+        await lkRoom.connect(wsUrl, data.token);
+        console.log(`Connected to room: ${data.room}, participants:`, lkRoom.remoteParticipants.size);
+
+        // Explicitly start audio playback (required for browser autoplay policy)
+        try { await lkRoom.startAudio(); } catch(e) { console.warn('startAudio failed:', e); }
+        console.log('canPlaybackAudio:', lkRoom.canPlaybackAudio);
+
+        // 3. Publish microphone
+        await lkRoom.localParticipant.setMicrophoneEnabled(true);
+        document.getElementById('live-transcript').innerHTML = '<p class="text-gray-400 text-xs">Connected! Start speaking...</p>';
+
+        // 4. Set up mic waveform from the local mic track
+        setupMicAnalyser();
+
+        // 5. Start duration timer
+        liveStartTime = Date.now();
+        liveDurationInterval = setInterval(updateLiveDuration, 1000);
+
+        // 6. Start polling for real-time metrics
+        prevTranscriptCount = 0;
+        prevMetricCount = 0;
+        liveMetricsInterval = setInterval(() => pollLiveMetrics(data.run_id), 1000);
+
+        loadRunning();
+      } catch(e) {
+        alert(`Error: ${e.message}`);
+        liveRunId = null;
+        liveProvider = null;
+        document.getElementById('live-voice-panel').classList.add('hidden');
+      } finally {
+        if (btn) { btn.disabled = false; btn.textContent = 'Live Voice'; }
+      }
+    }
+
+    async function stopLiveRun() {
+      if (!liveRunId) return;
+
+      // Disconnect from LiveKit room
+      if (lkRoom) {
+        try { lkRoom.disconnect(); } catch(e) {}
+        lkRoom = null;
+      }
+      // Remove agent audio element
+      if (agentAudioEl) { agentAudioEl.remove(); agentAudioEl = null; }
+
+      // Stop server-side agent process
+      try {
+        await fetch(`${API}/api/benchmark/stop/${liveRunId}`, { method: 'POST' });
+      } catch(e) {}
+
+      // Clean up intervals and animation frames
+      if (liveMetricsInterval) { clearInterval(liveMetricsInterval); liveMetricsInterval = null; }
+      if (liveDurationInterval) { clearInterval(liveDurationInterval); liveDurationInterval = null; }
+      if (micAnimFrame) { cancelAnimationFrame(micAnimFrame); micAnimFrame = null; }
+      if (agentAnimFrame) { cancelAnimationFrame(agentAnimFrame); agentAnimFrame = null; }
+      if (audioContext) { try { audioContext.close(); } catch(e) {} audioContext = null; }
+      micAnalyser = null;
+      agentAnalyser = null;
+
+      // Clear canvases
+      ['waveform-user', 'waveform-agent'].forEach(id => {
+        const c = document.getElementById(id);
+        if (c) { const ctx = c.getContext('2d'); ctx.clearRect(0, 0, c.width, c.height); }
+      });
+
+      liveRunId = null;
+      liveProvider = null;
+      document.getElementById('live-voice-panel').classList.add('hidden');
+      loadRunning();
+    }
+
+    function resetLiveMetrics() {
+      ['lm-ttft','lm-tps','lm-eou','lm-tts','lm-ttfa','lm-rtt'].forEach(id => {
+        document.getElementById(id).textContent = '—';
+      });
+      document.getElementById('lm-turns').textContent = '0';
+    }
+
+    function updateLiveDuration() {
+      if (!liveStartTime) return;
+      const elapsed = Math.floor((Date.now() - liveStartTime) / 1000);
+      const mm = String(Math.floor(elapsed / 60)).padStart(2, '0');
+      const ss = String(elapsed % 60).padStart(2, '0');
+      document.getElementById('live-duration').textContent = `${mm}:${ss}`;
+    }
+
+    async function pollLiveMetrics(runId) {
+      try {
+        const res = await fetch(`${API}/api/telemetry/live/${runId}`);
+        const data = await res.json();
+
+        // Update metrics pills with latest values
+        const ms = data.metrics || [];
+        let lastTTFT=null, lastTPS=null, lastEOU=null, lastTTS=null, lastTTFA=null, lastRTT=null;
+        let turnCount = 0;
+        ms.forEach(m => {
+          if (m.type === 'llm') { lastTTFT = m.ttft; lastTPS = m.tokens_per_second; }
+          if (m.type === 'eou') { lastEOU = m.end_of_utterance_delay; }
+          if (m.type === 'tts') { lastTTS = m.ttfb; }
+          if (m.type === 'ttfa') { lastTTFA = m.ttfa; }
+          if (m.type === 'turn_rtt') { lastRTT = m.turn_rtt; turnCount++; }
+        });
+
+        if (lastTTFT != null) document.getElementById('lm-ttft').textContent = lastTTFT.toFixed(3) + 's';
+        if (lastTPS != null) document.getElementById('lm-tps').textContent = lastTPS.toFixed(1);
+        if (lastEOU != null) document.getElementById('lm-eou').textContent = lastEOU.toFixed(3) + 's';
+        if (lastTTS != null) document.getElementById('lm-tts').textContent = lastTTS.toFixed(3) + 's';
+        if (lastTTFA != null) document.getElementById('lm-ttfa').textContent = lastTTFA.toFixed(3) + 's';
+        if (lastRTT != null) document.getElementById('lm-rtt').textContent = lastRTT.toFixed(3) + 's';
+        if (turnCount > 0) document.getElementById('lm-turns').textContent = String(turnCount);
+
+        // Update transcripts (user = right-aligned, agent = left-aligned)
+        const transcripts = data.transcripts || [];
+        if (transcripts.length > prevTranscriptCount) {
+          const el = document.getElementById('live-transcript');
+          for (let i = prevTranscriptCount; i < transcripts.length; i++) {
+            const t = transcripts[i];
+            const div = document.createElement('div');
+            if (t.role === 'agent') {
+              div.className = 'transcript-bubble transcript-agent';
+              div.innerHTML = '<span class="text-[10px] text-blue-400 block mb-0.5">Agent</span>' + escHtml(t.text);
+            } else {
+              div.className = 'transcript-bubble transcript-user';
+              div.innerHTML = '<span class="text-[10px] text-gray-500 block mb-0.5">You</span>' + escHtml(t.text);
+            }
+            el.appendChild(div);
+          }
+          prevTranscriptCount = transcripts.length;
+          el.scrollTop = el.scrollHeight;
+        }
+      } catch(e) {}
+    }
+
+    // ── Audio Waveform Rendering (Real Audio) ─────────────────────────────
+    function ensureAudioContext() {
+      if (!audioContext || audioContext.state === 'closed') {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioContext.state === 'suspended') {
+        audioContext.resume();
+      }
+      return audioContext;
+    }
+
+    function setupMicAnalyser() {
+      if (!lkRoom) return;
+      const micTrackPub = lkRoom.localParticipant.getTrackPublication(
+        window.LivekitClient.Track.Source.Microphone
+      );
+      if (!micTrackPub || !micTrackPub.track) {
+        // Retry shortly — track may not be published yet
+        setTimeout(setupMicAnalyser, 500);
+        return;
+      }
+      const mediaStream = new MediaStream([micTrackPub.track.mediaStreamTrack]);
+      const ctx = ensureAudioContext();
+      const source = ctx.createMediaStreamSource(mediaStream);
+      micAnalyser = ctx.createAnalyser();
+      micAnalyser.fftSize = 256;
+      source.connect(micAnalyser);
+      drawWaveform('waveform-user', () => micAnalyser, '#4ade80', 'mic');
+    }
+
+    function setupAgentAudioAnalyser(mediaStreamTrack) {
+      const ctx = ensureAudioContext();
+      try {
+        const stream = new MediaStream([mediaStreamTrack]);
+        const source = ctx.createMediaStreamSource(stream);
+        agentAnalyser = ctx.createAnalyser();
+        agentAnalyser.fftSize = 256;
+        source.connect(agentAnalyser);
+        // Don't connect to destination — the attached <audio> element handles playback
+        drawWaveform('waveform-agent', () => agentAnalyser, '#60a5fa', 'agent');
+      } catch(e) {
+        console.warn('Could not set up agent audio analyser:', e);
+        // Fallback: animated sine wave
+        drawFallbackWaveform();
+      }
+    }
+
+    function drawWaveform(canvasId, getAnalyser, color, which) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = canvas.offsetWidth * dpr;
+      canvas.height = canvas.offsetHeight * dpr;
+      ctx.scale(dpr, dpr);
+      const w = canvas.offsetWidth, h = canvas.offsetHeight;
+
+      function draw() {
+        const animId = requestAnimationFrame(draw);
+        if (which === 'mic') micAnimFrame = animId;
+        else agentAnimFrame = animId;
+
+        const analyser = getAnalyser();
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(0, 0, w, h);
+
+        if (!analyser) {
+          // Draw flat line
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(0, h/2);
+          ctx.lineTo(w, h/2);
+          ctx.stroke();
+          return;
+        }
+
+        const bufLen = analyser.frequencyBinCount;
+        const data = new Uint8Array(bufLen);
+        analyser.getByteTimeDomainData(data);
+
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = color;
+        ctx.beginPath();
+        const sliceW = w / bufLen;
+        let x = 0;
+        for (let i = 0; i < bufLen; i++) {
+          const v = data[i] / 128.0;
+          const y = (v * h) / 2;
+          i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+          x += sliceW;
+        }
+        ctx.lineTo(w, h/2);
+        ctx.stroke();
+      }
+      draw();
+    }
+
+    function drawFallbackWaveform() {
+      const canvas = document.getElementById('waveform-agent');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = canvas.offsetWidth * dpr;
+      canvas.height = canvas.offsetHeight * dpr;
+      ctx.scale(dpr, dpr);
+      const w = canvas.offsetWidth, h = canvas.offsetHeight;
+      let phase = 0;
+      function draw() {
+        agentAnimFrame = requestAnimationFrame(draw);
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(0, 0, w, h);
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#60a5fa';
+        ctx.beginPath();
+        phase += 0.05;
+        for (let x = 0; x < w; x++) {
+          const y = h/2 + Math.sin((x*0.03)+phase)*(h*0.25)*(0.3+0.7*Math.sin(phase*0.3+x*0.005));
+          x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      }
+      draw();
+    }
+
+    // ── Scenario preview ──────────────────────────────────────────────────
+    const SCENARIO_DESCRIPTIONS = {
+      order_status: 'Customer checks order status and asks about refrigerator deals.',
+      product_return: 'Customer wants to return a defective drill and exchange for a different model.',
+      appliance_install: 'Customer asks about washer/dryer delivery and installation services.',
+      paint_guidance: 'Customer needs help choosing paint for a bedroom renovation.',
+      flooring_consult: 'Customer compares flooring options for a kitchen renovation.',
+    };
+    function updateScenarioPreview() {
+      const sid = document.getElementById('sim-scenario').value;
+      document.getElementById('scenario-preview-title').textContent = SCENARIO_DESCRIPTIONS[sid] || '';
+    }
+
+    // ── Simulation with live logs ──────────────────────────────────────────
+    async function startSimulation() {
+      const provider = document.getElementById('sim-provider').value;
+      const numRuns = parseInt(document.getElementById('sim-runs').value) || 1;
+      const muteMic = document.getElementById('sim-mute').checked;
+      const btn = document.getElementById('btn-simulate');
+      const status = document.getElementById('sim-status');
+      const logEl = document.getElementById('sim-log');
+      const badge = document.getElementById('log-status-badge');
+      const micBadge = document.getElementById('mic-status-badge');
+
+      btn.disabled = true; btn.classList.add('btn-disabled'); btn.textContent = 'Running...';
+      status.innerHTML = '<span class="text-yellow-400">Launching simulated benchmark...</span>';
+
+      // Show mic mute status badge
+      if (muteMic) {
+        micBadge.textContent = '🔇 Mic Muted';
+        micBadge.style.background = '#fef2f2'; micBadge.style.color = '#dc2626'; micBadge.style.borderColor = '#fecaca';
+      } else {
+        micBadge.textContent = '🎙️ Mic Live';
+        micBadge.style.background = '#f0fdf4'; micBadge.style.color = '#16a34a'; micBadge.style.borderColor = '#bbf7d0';
+      }
+      micBadge.classList.remove('hidden');
+      logEl.innerHTML = '<div class="log-entry-header">Simulation Starting...</div>';
+      badge.textContent = 'Running';
+      badge.className = 'text-xs px-2 py-0.5 rounded bg-green-900 text-green-300';
+      simLogSince = 0;
+
+      try {
+        const res = await fetch(`${API}/api/benchmark/simulate`, {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ provider, num_runs: numRuns, mute_mic: muteMic, scenario: document.getElementById('sim-scenario').value }),
+        });
+        const data = await res.json();
+        simRunId = data.run_id;
+        status.innerHTML = `<span class="text-green-400">Simulation started</span> &mdash; PID: ${data.pid}`;
+        loadRunning();
+
+        // Start polling logs
+        if (simLogInterval) clearInterval(simLogInterval);
+        simLogInterval = setInterval(() => pollLogs(data.run_id), 1500);
+
+        // Poll until done
+        const checkDone = setInterval(async () => {
+          try {
+            const r = await fetch(`${API}/api/benchmark/running`);
+            const running = await r.json();
+            if (!running[data.run_id]) {
+              clearInterval(checkDone);
+              clearInterval(simLogInterval);
+              // Final log fetch
+              await pollLogs(data.run_id);
+              btn.disabled = false; btn.classList.remove('btn-disabled'); btn.textContent = 'Run Simulation';
+              status.innerHTML = '<span class="text-green-400">Simulation completed!</span> Check Dashboard and Trends tabs.';
+              badge.textContent = 'Completed';
+              badge.className = 'text-xs px-2 py-0.5 rounded bg-blue-900 text-blue-300';
+              micBadge.classList.add('hidden');
+              loadRunning();
+            }
+          } catch(e) {}
+        }, 2000);
+      } catch (e) {
+        status.innerHTML = `<span class="text-red-400">Error: ${e.message}</span>`;
+        btn.disabled = false; btn.classList.remove('btn-disabled'); btn.textContent = 'Run Simulation';
+        badge.textContent = 'Error'; badge.className = 'text-xs px-2 py-0.5 rounded bg-red-900 text-red-300';
+        micBadge.classList.add('hidden');
+      }
+    }
+
+    function formatLogLine(raw) {
+      // Parse: "2026-05-11 16:00:06,333 INFO sim_runner [2/6] Typing: ..."
+      const tsMatch = raw.match(/^(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})[,.]\d+\s+(INFO|WARNING|ERROR|DEBUG)\s+\S+\s+(.*)$/);
+      let ts = '', level = '', msg = raw;
+      if (tsMatch) {
+        ts = tsMatch[1].split(' ')[1] || ''; // just HH:MM:SS
+        level = tsMatch[2];
+        msg = tsMatch[3];
+      }
+
+      // === Run header (e.g. "=== Text Run 1: nemo | Scenario: ...")
+      if (/^={2,}/.test(msg) && /Run \d+/.test(msg)) {
+        return `<div class="log-entry-header">${escHtml(msg.replace(/=+/g, '').trim())}</div>`;
+      }
+      // Typing: user prompt — handles "[N/M] Typing: ..." and "Sending prompt N/M: ..."
+      const typingMatch = msg.match(/^\s*\[(\d+\/\d+)\]\s+Typing:\s+(.*)$/) || msg.match(/^Sending prompt\s+(\d+\/\d+):\s+(.*)$/);
+      if (typingMatch) {
+        return `<div class="log-entry-typing"><span class="log-prompt-label">PROMPT ${typingMatch[1]}</span><div class="log-prompt-text">${escHtml(typingMatch[2].replace(/\.{3}$/, ''))}</div></div>`;
+      }
+      // Result JSON
+      if (/^Result:/i.test(msg) || /^\{.*"provider"/.test(msg)) {
+        let jsonStr = msg.replace(/^Result:\s*/, '');
+        try { jsonStr = JSON.stringify(JSON.parse(jsonStr), null, 2); } catch(e) {}
+        return `<div class="log-entry-result"><span style="color:#A78BFA;font-weight:600;font-size:10px">RESULT</span><pre>${escHtml(jsonStr)}</pre></div>`;
+      }
+      // Completion / success
+      if (/complet|Run completed|success|BENCHMARK SUMMARY/i.test(msg)) {
+        return `<div class="log-entry-done">${escHtml(msg)}</div>`;
+      }
+      // Error
+      if (/error|exception|fail/i.test(msg) || level === 'ERROR') {
+        return `<div class="log-entry-error">${escHtml(msg)}</div>`;
+      }
+      // Warning
+      if (/warning|warn/i.test(msg) || level === 'WARNING') {
+        const badge = `<span class="log-badge log-badge-warn">warn</span>`;
+        return `<div class="log-entry">${ts?`<span class="log-ts">${ts}</span>`:''}${badge}<span class="log-msg">${escHtml(msg)}</span></div>`;
+      }
+      // Waiting / initializing
+      if (/waiting|initializ|sleep|pause/i.test(msg)) {
+        return `<div class="log-entry-wait">${ts?`<span class="log-ts" style="display:inline">${ts}</span> `:''}${escHtml(msg)}</div>`;
+      }
+      // Default info line
+      const badgeCls = level === 'INFO' ? 'log-badge-info' : '';
+      const badge = badgeCls ? `<span class="log-badge ${badgeCls}">info</span>` : '';
+      return `<div class="log-entry">${ts?`<span class="log-ts">${ts}</span>`:''}${badge}<span class="log-msg">${escHtml(msg)}</span></div>`;
+    }
+
+    async function pollLogs(runId) {
+      try {
+        const res = await fetch(`${API}/api/benchmark/logs/${runId}?since=${simLogSince}`);
+        const data = await res.json();
+        if (data.lines.length === 0) return;
+        simLogSince = data.total;
+        const logEl = document.getElementById('sim-log');
+        const html = data.lines.map(line => formatLogLine(line)).join('');
+        logEl.innerHTML += html;
+        logEl.scrollTop = logEl.scrollHeight;
+      } catch(e) {}
+    }
+
+    function escHtml(s) {
+      return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    // ── Date filter helpers ──────────────────────────────────────────────
+    function getDateFilterParams() {
+      const from = document.getElementById('filter-date-from')?.value || '';
+      const to = document.getElementById('filter-date-to')?.value || '';
+      const params = new URLSearchParams();
+      if (from) params.set('date_from', from);
+      if (to) params.set('date_to', to);
+      const qs = params.toString();
+      return qs ? `?${qs}` : '';
+    }
+
+    function applyDateFilter() {
+      refreshAll();
+    }
+
+    function clearDateFilter() {
+      document.getElementById('filter-date-from').value = '';
+      document.getElementById('filter-date-to').value = '';
+      refreshAll();
+    }
+
+    // ── PDF Report Download ──────────────────────────────────────────────
+    async function downloadPdfReport() {
+      const btn = document.getElementById('btn-download-pdf');
+      const origText = btn.innerHTML;
+      btn.innerHTML = '<span class="animate-pulse">Generating PDF...</span>';
+      btn.disabled = true;
+
+      try {
+        const panel = document.getElementById('panel-dashboard');
+        const canvas = await html2canvas(panel, {
+          scale: 1.5,
+          useCORS: true,
+          logging: false,
+          backgroundColor: '#F5F6FA',
+          windowWidth: panel.scrollWidth,
+        });
+
+        const jsPDF = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+        const imgWidth = 210; // A4 width in mm
+        const pageHeight = 297; // A4 height in mm
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+
+        // Add title
+        pdf.setFontSize(16);
+        pdf.setTextColor(0, 73, 144); // Lowe's blue
+        pdf.text('Voice Agent Benchmark Report', 14, 15);
+        pdf.setFontSize(9);
+        pdf.setTextColor(100, 100, 100);
+        const dateFrom = document.getElementById('filter-date-from').value;
+        const dateTo = document.getElementById('filter-date-to').value;
+        const dateRange = (dateFrom || dateTo) ? `Date Range: ${dateFrom || 'start'} to ${dateTo || 'now'}` : 'All runs';
+        pdf.text(`${dateRange}  |  Generated: ${new Date().toLocaleString()}`, 14, 21);
+
+        // Add the dashboard image across multiple pages if needed
+        const imgData = canvas.toDataURL('image/png');
+        let yOffset = 26; // start below the title
+        let remaining = imgHeight;
+
+        pdf.addImage(imgData, 'PNG', 0, yOffset, imgWidth, imgHeight);
+        remaining -= (pageHeight - yOffset);
+
+        while (remaining > 0) {
+          pdf.addPage();
+          yOffset = yOffset - pageHeight;
+          pdf.addImage(imgData, 'PNG', 0, yOffset, imgWidth, imgHeight);
+          remaining -= pageHeight;
+        }
+
+        const filename = `benchmark-report${dateFrom ? '_' + dateFrom : ''}${dateTo ? '_' + dateTo : ''}.pdf`;
+        pdf.save(filename);
+      } catch (e) {
+        console.error('PDF generation failed:', e);
+        alert('PDF generation failed: ' + e.message);
+      } finally {
+        btn.innerHTML = origText;
+        btn.disabled = false;
+      }
+    }
+
+    // ── ASR PDF Report Download ─────────────────────────────────────────
+    async function downloadAsrPdfReport() {
+      const btn = document.getElementById('btn-asr-pdf');
+      const origText = btn.innerHTML;
+      btn.innerHTML = '<span class="animate-pulse">Generating PDF...</span>';
+      btn.disabled = true;
+
+      try {
+        // Expand all <details> so per-sample tables are visible in the PDF
+        const details = document.querySelectorAll('#panel-asr details');
+        const wasOpen = [];
+        details.forEach(d => { wasOpen.push(d.open); d.open = true; });
+
+        const panel = document.getElementById('panel-asr');
+        const canvas = await html2canvas(panel, {
+          scale: 1.5,
+          useCORS: true,
+          logging: false,
+          backgroundColor: '#F0F2F5',
+          windowWidth: panel.scrollWidth,
+        });
+
+        // Restore <details> state
+        details.forEach((d, i) => { d.open = wasOpen[i]; });
+
+        const jsPDF = (window.jspdf && window.jspdf.jsPDF) || window.jsPDF;
+        const imgWidth = 210; // A4 width in mm
+        const pageHeight = 297; // A4 height in mm
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+
+        // Title
+        pdf.setFontSize(16);
+        pdf.setTextColor(0, 73, 144);
+        pdf.text('ASR Evaluation Report', 14, 15);
+        pdf.setFontSize(9);
+        pdf.setTextColor(100, 100, 100);
+        pdf.text(`Generated: ${new Date().toLocaleString()}`, 14, 21);
+
+        // Add the ASR panel image across multiple pages
+        const imgData = canvas.toDataURL('image/png');
+        let yOffset = 26;
+        let remaining = imgHeight;
+
+        pdf.addImage(imgData, 'PNG', 0, yOffset, imgWidth, imgHeight);
+        remaining -= (pageHeight - yOffset);
+
+        while (remaining > 0) {
+          pdf.addPage();
+          yOffset = yOffset - pageHeight;
+          pdf.addImage(imgData, 'PNG', 0, yOffset, imgWidth, imgHeight);
+          remaining -= pageHeight;
+        }
+
+        pdf.save(`asr-evaluation-report_${new Date().toISOString().slice(0,10)}.pdf`);
+      } catch (e) {
+        console.error('ASR PDF generation failed:', e);
+        alert('ASR PDF generation failed: ' + e.message);
+      } finally {
+        btn.innerHTML = origText;
+        btn.disabled = false;
+      }
+    }
+
+    // ── Dashboard ──────────────────────────────────────────────────────────
+    async function loadDashboard() {
+      try {
+        const dfp = getDateFilterParams();
+        const [compareRes, werRes] = await Promise.all([
+          fetch(`${API}/api/telemetry/compare${dfp}`),
+          fetch(`${API}/api/telemetry/wer${dfp}`),
+        ]);
+        const data = await compareRes.json();
+        const werData = await werRes.json();
+        renderSummary(data);
+        renderCharts(data);
+        renderNewMetricCards(data);
+        renderWer(werData);
+      } catch(e) {
+        document.getElementById('summary-stats').innerHTML = '<p class="text-red-400 col-span-4">Could not load telemetry.</p>';
+      }
+    }
+
+    function renderSummary(data) {
+      const nemo = data.nemo || {}, deep = data.deep || {};
+      const el = document.getElementById('summary-stats');
+      const ms = [
+        { label:'LLM TTFT (Avg)', nemo:nemo.llm_ttft, deep:deep.llm_ttft, unit:'s', lb:true,
+          desc:'Average time to receive the first LLM token. Lower = faster perceived response.',
+          tip:'The winning provider starts generating answers sooner. A gap >0.3s is noticeable to users.' },
+        { label:'Tokens/sec (Avg)', nemo:nemo.llm_tokens_per_second, deep:deep.llm_tokens_per_second, unit:'', lb:false,
+          desc:'Average LLM token generation speed after the first token. Higher = faster streaming.',
+          tip:'Higher throughput means the full response reaches TTS sooner, reducing overall latency.' },
+        { label:'TTFA (Avg)', nemo:nemo.ttfa, deep:deep.ttfa, unit:'s', lb:true,
+          desc:'Average Time to First Audio — end-to-end delay the user actually hears. Lower = snappier.',
+          tip:'This is the single most important UX metric. It combines EOU + LLM TTFT + TTS TTFB.' },
+        { label:'Turn RTT (Avg)', nemo:nemo.turn_rtt, deep:deep.turn_rtt, unit:'s', lb:true,
+          desc:'Average full round-trip from user silence to agent speech. Lower = more natural conversation.',
+          tip:'Values >2s feel sluggish in conversation. Compare to see which pipeline is faster overall.' },
+      ];
+      el.innerHTML = ms.map(m => {
+        const nv=m.nemo?.avg, dv=m.deep?.avg;
+        const nw = m.lb ? (nv!=null&&dv!=null&&nv<dv) : (nv!=null&&dv!=null&&nv>dv);
+        const dw = m.lb ? (nv!=null&&dv!=null&&dv<nv) : (nv!=null&&dv!=null&&dv>nv);
+        const badge = renderWinnerBadge(
+          nv != null ? {avg: nv} : null,
+          dv != null ? {avg: dv} : null,
+          m.lb
+        );
+        return `<div class="stat-card">
+          <p class="text-xs text-gray-500 mb-1 font-semibold">${m.label}</p>
+          <p class="text-[10px] text-gray-500 mb-2">${m.desc}</p>
+          <div class="flex justify-between items-end">
+            <div><span class="text-xs text-gray-500">Nemo</span><p class="text-lg font-bold ${nw?'nemo-color':'text-gray-900'}">${nv!=null?nv.toFixed(3)+m.unit:'—'}</p></div>
+            <div class="text-right"><span class="text-xs text-gray-500">Deep</span><p class="text-lg font-bold ${dw?'deep-color':'text-gray-900'}">${dv!=null?dv.toFixed(3)+m.unit:'—'}</p></div>
+          </div>
+          <div class="mt-2">${badge}</div>
+          <p class="text-xs mt-2 text-gray-500">Nemo: ${m.nemo?.count||0} samples &bull; Deep: ${m.deep?.count||0} samples</p>
+          <div class="info-tip mt-2"><p class="text-[10px] text-gray-500">${m.tip}</p></div>
+        </div>`;
+      }).join('');
+    }
+
+    function renderNewMetricCards(data) {
+      const nemo = data.nemo || {}, deep = data.deep || {};
+
+      // Interruption rate
+      const nIR = nemo.interruption_rate || {}, dIR = deep.interruption_rate || {};
+      document.getElementById('interruption-display').innerHTML = `
+        <div class="flex justify-center gap-8">
+          <div><p class="text-xs nemo-color">Nemo</p>
+            <p class="text-2xl font-bold text-gray-900">${nIR.rate!=null?(nIR.rate*100).toFixed(1)+'%':'—'}</p>
+            <p class="text-[10px] text-gray-500">${nIR.total_interruptions||0} / ${nIR.total_turns||0} turns</p></div>
+          <div><p class="text-xs deep-color">Deep</p>
+            <p class="text-2xl font-bold text-gray-900">${dIR.rate!=null?(dIR.rate*100).toFixed(1)+'%':'—'}</p>
+            <p class="text-[10px] text-gray-500">${dIR.total_interruptions||0} / ${dIR.total_turns||0} turns</p></div>
+        </div>`;
+
+      // Avg turns per session
+      const nTurns = nIR.total_turns && nemo.run_count ? (nIR.total_turns / nemo.run_count).toFixed(1) : '—';
+      const dTurns = dIR.total_turns && deep.run_count ? (dIR.total_turns / deep.run_count).toFixed(1) : '—';
+      document.getElementById('turns-display').innerHTML = `
+        <div class="flex justify-center gap-8">
+          <div><p class="text-xs nemo-color">Nemo</p><p class="text-2xl font-bold text-gray-900">${nTurns}</p></div>
+          <div><p class="text-xs deep-color">Deep</p><p class="text-2xl font-bold text-gray-900">${dTurns}</p></div>
+        </div>`;
+
+      // Interruption rate winner (lower is better)
+      const winIR = document.getElementById('winner-interruption');
+      if (winIR) {
+        winIR.innerHTML = renderWinnerBadge(
+          nIR.rate != null ? {avg: nIR.rate} : null,
+          dIR.rate != null ? {avg: dIR.rate} : null,
+          true
+        );
+      }
+
+      // Avg session duration
+      const nSD = nemo.session_duration?.avg, dSD = deep.session_duration?.avg;
+      document.getElementById('session-dur-display').innerHTML = `
+        <div class="flex justify-center gap-8">
+          <div><p class="text-xs nemo-color">Nemo</p><p class="text-2xl font-bold text-gray-900">${nSD!=null?nSD.toFixed(1)+'s':'—'}</p></div>
+          <div><p class="text-xs deep-color">Deep</p><p class="text-2xl font-bold text-gray-900">${dSD!=null?dSD.toFixed(1)+'s':'—'}</p></div>
+        </div>`;
+
+      // Session duration winner (lower is better)
+      const winSD = document.getElementById('winner-session-dur');
+      if (winSD) {
+        winSD.innerHTML = renderWinnerBadge(
+          nSD != null ? {avg: nSD} : null,
+          dSD != null ? {avg: dSD} : null,
+          true
+        );
+      }
+    }
+
+    function renderWer(werData) {
+      const sumEl = document.getElementById('wer-summary');
+      const detEl = document.getElementById('wer-detail');
+      const providers = Object.keys(werData);
+
+      if (providers.length === 0) {
+        sumEl.innerHTML = '<p class="text-gray-500 text-sm">No WER data yet. Run a simulation to generate STT transcripts.</p>';
+        detEl.innerHTML = '';
+        document.getElementById('winner-wer').innerHTML = '';
+        return;
+      }
+
+      // WER winner badge (lower WER is better)
+      const winnerEl = document.getElementById('winner-wer');
+      if (winnerEl) {
+        const nWer = werData.nemo?.overall_wer, dWer = werData.deep?.overall_wer;
+        winnerEl.innerHTML = renderWinnerBadge(
+          nWer != null ? {avg: nWer} : null,
+          dWer != null ? {avg: dWer} : null,
+          true
+        );
+      }
+
+      // Summary gauges
+      sumEl.innerHTML = providers.map(p => {
+        const d = werData[p];
+        const wer = d.overall_wer;
+        const color = p === 'nemo' ? '#76b900' : '#3b82f6';
+        const cls = p === 'nemo' ? 'nemo-color' : 'deep-color';
+        const label = p === 'nemo' ? 'Nemotron' : 'Deepgram';
+        const quality = wer == null ? '—' : wer <= 0.05 ? 'Excellent' : wer <= 0.10 ? 'Good' : wer <= 0.20 ? 'Fair' : 'Poor';
+        const qualColor = wer == null ? '' : wer <= 0.05 ? 'text-green-400' : wer <= 0.10 ? 'text-blue-400' : wer <= 0.20 ? 'text-yellow-400' : 'text-red-400';
+        return `<div class="flex items-center gap-4 mb-4 p-3 rounded-lg" style="background:${color}10;border:1px solid ${color}33">
+          <div>
+            ${renderSvgGauge(wer != null ? Math.round((1-wer)*100) : 0, 100, color)}
+          </div>
+          <div>
+            <p class="text-sm font-semibold ${cls}">${label} STT</p>
+            <p class="text-xl font-bold text-gray-900">${wer!=null?(wer*100).toFixed(1)+'%':'—'}</p>
+            <p class="text-xs ${qualColor} font-medium">${quality}</p>
+            <p class="text-[10px] text-gray-500">${d.total_utterances} utterances across ${d.runs.length} runs</p>
+          </div>
+        </div>`;
+      }).join('');
+
+      // Per-utterance detail
+      let detailHtml = '';
+      providers.forEach(p => {
+        const d = werData[p];
+        const cls = p === 'nemo' ? 'nemo-color' : 'deep-color';
+        const label = p === 'nemo' ? 'Nemotron' : 'Deepgram';
+        // Take the latest run
+        const latestRun = d.runs[d.runs.length - 1];
+        if (!latestRun) return;
+        detailHtml += `<p class="text-xs font-semibold ${cls} mb-2">${label} (${latestRun.run_id})</p>`;
+        detailHtml += latestRun.utterances.map(u => {
+          const werPct = u.wer != null ? (u.wer * 100).toFixed(1) + '%' : 'N/A';
+          const barColor = u.wer == null ? '#475569' : u.wer <= 0.05 ? '#4ade80' : u.wer <= 0.15 ? '#fbbf24' : '#f87171';
+          const barW = u.wer != null ? Math.round(Math.min(u.wer, 1) * 100) : 0;
+          return `<div class="mb-2 text-xs">
+            <div class="flex justify-between"><span class="text-gray-500 truncate" style="max-width:70%" title="${escHtml(u.reference||'')}">"${escHtml((u.hypothesis||'').substring(0,60))}${(u.hypothesis||'').length>60?'...':''}"</span>
+            <span class="font-medium" style="color:${barColor}">${werPct}</span></div>
+            <div class="h-1 rounded-full bg-gray-200 overflow-hidden mt-1"><div class="h-full rounded-full" style="width:${barW}%;background:${barColor}"></div></div>
+          </div>`;
+        }).join('');
+        detailHtml += '<div class="border-b border-gray-200 mb-3"></div>';
+      });
+      detEl.innerHTML = detailHtml || '<p class="text-gray-500 text-xs">No utterance data</p>';
+    }
+
+    function renderCharts(data) {
+      const nemo = data.nemo||{}, deep = data.deep||{};
+      // lowerBetter: true = lower avg wins (latency), false = higher avg wins (throughput)
+      const defs = [
+        {id:'chart-ttft',n:nemo.llm_ttft,d:deep.llm_ttft, lb:true, label:'LLM TTFT'},
+        {id:'chart-tps',n:nemo.llm_tokens_per_second,d:deep.llm_tokens_per_second, lb:false, label:'Tokens/sec'},
+        {id:'chart-eou',n:nemo.eou_delay,d:deep.eou_delay, lb:true, label:'EOU Delay'},
+        {id:'chart-ttfa',n:nemo.ttfa,d:deep.ttfa, lb:true, label:'TTFA'},
+        {id:'chart-tts',n:nemo.tts_ttfb,d:deep.tts_ttfb, lb:true, label:'TTS TTFB'},
+        {id:'chart-stt',n:nemo.eou_transcription_delay,d:deep.eou_transcription_delay, lb:true, label:'STT Delay'},
+        {id:'chart-turn-rtt',n:nemo.turn_rtt,d:deep.turn_rtt, lb:true, label:'Turn RTT'},
+        {id:'chart-session',n:nemo.session_duration,d:deep.session_duration, lb:true, label:'Session Duration'},
+      ];
+      defs.forEach(def => {
+        if (charts[def.id]) charts[def.id].destroy();
+        const ctx = document.getElementById(def.id).getContext('2d');
+        const labels = ['Avg','P50','P95','Min','Max'];
+        const nV = def.n?[def.n.avg,def.n.p50,def.n.p95,def.n.min,def.n.max]:[0,0,0,0,0];
+        const dV = def.d?[def.d.avg,def.d.p50,def.d.p95,def.d.min,def.d.max]:[0,0,0,0,0];
+        charts[def.id] = new Chart(ctx, {
+          type:'bar', data:{labels, datasets:[
+            {label:'Nemotron',data:nV,backgroundColor:'rgba(118,185,0,0.7)',borderColor:'#558B00',borderWidth:1},
+            {label:'Deepgram',data:dV,backgroundColor:'rgba(0,73,144,0.6)',borderColor:'#004990',borderWidth:1},
+          ]},
+          options:{responsive:true,
+            plugins:{legend:{labels:{color:'#4A5568',font:{size:11}}}},
+            scales:{x:{ticks:{color:'#4A5568'},grid:{color:'#E2E8F0'}},y:{ticks:{color:'#4A5568'},grid:{color:'#EDF2F7'}}},
+          },
+        });
+
+        // Render winner badge
+        const winnerId = 'winner-' + def.id.replace('chart-','');
+        const winnerEl = document.getElementById(winnerId);
+        if (winnerEl) {
+          winnerEl.innerHTML = renderWinnerBadge(def.n, def.d, def.lb);
+        }
+      });
+    }
+
+    function renderWinnerBadge(nData, dData, lowerBetter) {
+      const nAvg = nData?.avg, dAvg = dData?.avg;
+      if (nAvg == null && dAvg == null) return '';
+      if (nAvg == null) return `<span class="winner-badge winner-deep">&#x1F3C6; Deepgram wins &mdash; no Nemotron data</span>`;
+      if (dAvg == null) return `<span class="winner-badge winner-nemo">&#x1F3C6; Nemotron wins &mdash; no Deepgram data</span>`;
+
+      const diff = Math.abs(nAvg - dAvg);
+      const threshold = Math.max(nAvg, dAvg) * 0.02; // 2% tolerance for tie
+
+      if (diff < threshold) {
+        return `<span class="winner-badge winner-tie">&#x1F91D; Tie &mdash; both within 2% (Nemo: ${nAvg.toFixed(3)} vs Deep: ${dAvg.toFixed(3)})</span>`;
+      }
+
+      const nemoWins = lowerBetter ? nAvg < dAvg : nAvg > dAvg;
+      const pctDiff = ((diff / Math.max(nAvg, dAvg)) * 100).toFixed(1);
+
+      if (nemoWins) {
+        return `<span class="winner-badge winner-nemo">&#x1F3C6; Nemotron wins &mdash; ${pctDiff}% better (${nAvg.toFixed(3)} vs ${dAvg.toFixed(3)})</span>`;
+      } else {
+        return `<span class="winner-badge winner-deep">&#x1F3C6; Deepgram wins &mdash; ${pctDiff}% better (${dAvg.toFixed(3)} vs ${nAvg.toFixed(3)})</span>`;
+      }
+    }
+
+    // ── Trends ─────────────────────────────────────────────────────────────
+    const TREND_METRICS = [
+      { key: 'llm_ttft_avg', label: 'LLM TTFT', unit: 's', lowerBetter: true },
+      { key: 'llm_tps_avg',  label: 'Tokens/sec', unit: '', lowerBetter: false },
+      { key: 'eou_delay_avg', label: 'EOU Delay', unit: 's', lowerBetter: true },
+      { key: 'tts_ttfb_avg', label: 'TTS TTFB', unit: 's', lowerBetter: true },
+      { key: 'ttfa_avg',     label: 'TTFA', unit: 's', lowerBetter: true },
+      { key: 'turn_rtt_avg', label: 'Turn RTT', unit: 's', lowerBetter: true },
+      { key: 'wer_avg',      label: 'WER', unit: '', lowerBetter: true },
+    ];
+    let trendAllCharts = [];
+
+    function _buildTrendDatasets(runs, metricKey, provFilter) {
+      const nemoRuns = runs.filter(r => r.provider === 'nemo');
+      const deepRuns = runs.filter(r => r.provider === 'deep');
+      // Use per-provider indexing: Run 1..N for each provider independently
+      const maxLen = Math.max(nemoRuns.length, deepRuns.length);
+      const labels = Array.from({length: maxLen}, (_, i) => `Run ${i + 1}`);
+      let datasets = [];
+      if (provFilter === 'both' || provFilter === 'nemo') {
+        datasets.push({
+          label: 'Nemotron',
+          data: nemoRuns.map(r => r[metricKey] ?? null),
+          borderColor: '#76b900', backgroundColor: 'rgba(118,185,0,0.2)',
+          tension: 0.3, spanGaps: false, pointRadius: 5, pointBackgroundColor: '#76b900',
+        });
+      }
+      if (provFilter === 'both' || provFilter === 'deep') {
+        datasets.push({
+          label: 'Deepgram',
+          data: deepRuns.map(r => r[metricKey] ?? null),
+          borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.2)',
+          tension: 0.3, spanGaps: false, pointRadius: 5, pointBackgroundColor: '#3b82f6',
+        });
+      }
+      return { labels, datasets, nemoRuns, deepRuns };
+    }
+
+    function _createTrendChart(canvasEl, label, labels, datasets, runs) {
+      return new Chart(canvasEl.getContext('2d'), {
+        type: 'line',
+        data: { labels, datasets },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { labels: { color: '#94a3b8', font: { size: 11 } } },
+            title: { display: !!label, text: label, font: { size: 13, weight: '600' }, color: '#374151', padding: { bottom: 8 } },
+            tooltip: {
+              callbacks: {
+                afterLabel: (ctx) => {
+                  const prov = ctx.dataset.label === 'Nemotron' ? 'nemo' : 'deep';
+                  const provRuns = (runs || []).filter(r => r.provider === prov);
+                  const run = provRuns[ctx.dataIndex];
+                  return run ? `Run: ${run.run_id}` : '';
+                }
+              }
+            }
+          },
+          scales: {
+            x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: '#e5e7eb' } },
+            y: { beginAtZero: true, ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: '#f3f4f6' } },
+          },
+        },
+      });
+    }
+
+    async function loadTrends() {
+      try {
+        const res = await fetch(`${API}/api/telemetry/trend${getDateFilterParams()}`);
+        const runs = await res.json();
+        const metric = document.getElementById('trend-metric').value;
+        const provFilter = document.getElementById('trend-provider').value;
+
+        // Cleanup old all-grid charts
+        trendAllCharts.forEach(c => c.destroy());
+        trendAllCharts = [];
+
+        const singleEl = document.getElementById('trend-single');
+        const gridEl = document.getElementById('trend-all-grid');
+
+        if (metric === 'all') {
+          // Show grid, hide single
+          singleEl.classList.add('hidden');
+          gridEl.classList.remove('hidden');
+          gridEl.innerHTML = TREND_METRICS.map(m =>
+            `<div class="card p-5"><canvas id="trend-all-${m.key}" height="200"></canvas></div>`
+          ).join('');
+
+          TREND_METRICS.forEach(m => {
+            const { labels, datasets } = _buildTrendDatasets(runs, m.key, provFilter);
+            const canvas = document.getElementById(`trend-all-${m.key}`);
+            if (canvas) {
+              trendAllCharts.push(_createTrendChart(canvas, m.label, labels, datasets, runs));
+            }
+          });
+        } else {
+          // Show single, hide grid
+          singleEl.classList.remove('hidden');
+          gridEl.classList.add('hidden');
+          gridEl.innerHTML = '';
+
+          const { labels, datasets } = _buildTrendDatasets(runs, metric, provFilter);
+          if (charts['chart-trend']) charts['chart-trend'].destroy();
+          const ctx = document.getElementById('chart-trend').getContext('2d');
+          charts['chart-trend'] = _createTrendChart(ctx.canvas, null, labels, datasets, runs);
+        }
+      } catch(e) {
+        console.error('Failed to load trends', e);
+      }
+    }
+
+    // ── Usage Gauges ───────────────────────────────────────────────────────
+    async function loadUsage() {
+      try {
+        const res = await fetch(`${API}/api/telemetry/usage${getDateFilterParams()}`);
+        const data = await res.json();
+        renderGauges(data);
+        renderUsageBars(data);
+      } catch(e) {
+        document.getElementById('usage-gauges').innerHTML = '<p class="text-red-400 col-span-3">Could not load usage data.</p>';
+      }
+    }
+
+    function renderGauges(data) {
+      const nemo = data.nemo || { prompt_tokens:0, completion_tokens:0, tts_characters:0, run_count:0 };
+      const deep = data.deep || { prompt_tokens:0, completion_tokens:0, tts_characters:0, run_count:0 };
+
+      const gauges = [
+        { label: 'Prompt Tokens', nemo: nemo.prompt_tokens, deep: deep.prompt_tokens, max: 32000,
+          desc: 'Context tokens sent to LLM per run (avg)',
+          explain: 'Prompt tokens = conversation history + system prompt sent to the LLM each turn. Higher values mean more context is being consumed. Monitor to avoid hitting context window limits.',
+          benchmark: 'Nemotron: 32K limit · GPT-4o-mini: 128K limit',
+          lowerBetter: true },
+        { label: 'Completion Tokens', nemo: nemo.completion_tokens, deep: deep.completion_tokens, max: 4000,
+          desc: 'Response tokens generated by LLM',
+          explain: 'Completion tokens = total tokens the LLM generated in responses. More tokens mean longer replies, which increases TTS synthesis time and cost. Concise responses are preferred for voice.',
+          benchmark: 'Typical voice response: 50–200 tokens per turn',
+          lowerBetter: true },
+        { label: 'TTS Characters', nemo: nemo.tts_characters, deep: deep.tts_characters, max: 5000,
+          desc: 'Characters synthesized to speech',
+          explain: 'TTS characters = total text sent to the text-to-speech engine. Directly impacts audio generation cost. Fewer characters with same information = more efficient agent.',
+          benchmark: 'Cost factor: ~$15 per 1M characters (OpenAI TTS)',
+          lowerBetter: true },
+      ];
+
+      const el = document.getElementById('usage-gauges');
+      el.innerHTML = gauges.map(g => {
+        const nAvg = g.nemo && nemo.run_count ? Math.round(g.nemo / nemo.run_count) : 0;
+        const dAvg = g.deep && deep.run_count ? Math.round(g.deep / deep.run_count) : 0;
+        const winner = renderWinnerBadge(
+          nAvg > 0 ? {avg: nAvg} : null,
+          dAvg > 0 ? {avg: dAvg} : null,
+          g.lowerBetter
+        );
+        return `<div class="card p-6 text-center">
+          <p class="text-xs font-semibold text-gray-700 mb-3">${g.label}</p>
+          <div class="flex justify-center gap-8 mb-3">
+            <div>
+              ${renderSvgGauge(nAvg, g.max, '#76b900')}
+              <p class="text-xs nemo-color mt-1">Nemo</p>
+              <p class="text-lg font-bold text-gray-900">${nAvg.toLocaleString()}</p>
+            </div>
+            <div>
+              ${renderSvgGauge(dAvg, g.max, '#3b82f6')}
+              <p class="text-xs deep-color mt-1">Deep</p>
+              <p class="text-lg font-bold text-gray-900">${dAvg.toLocaleString()}</p>
+            </div>
+          </div>
+          <p class="text-[10px] text-gray-500 mb-1">${g.desc}</p>
+          <div class="mt-2">${winner}</div>
+          <div class="info-tip mt-3 text-left">
+            <p class="text-[10px] text-gray-500">${g.explain}</p>
+            <p class="text-[10px] mt-1"><span class="benchmark-ref">${g.benchmark}</span></p>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function renderSvgGauge(value, max, color) {
+      const r = 36, circ = 2*Math.PI*r;
+      const pct = Math.min(value / max, 1);
+      const offset = circ * (1 - pct * 0.75); // 270-degree arc
+      return `<svg width="88" height="88" viewBox="0 0 88 88">
+        <circle cx="44" cy="44" r="${r}" fill="none" stroke="#DEE2E8" stroke-width="7"
+          stroke-dasharray="${circ*0.75} ${circ*0.25}" stroke-linecap="round"
+          transform="rotate(135 44 44)"/>
+        <circle cx="44" cy="44" r="${r}" fill="none" stroke="${color}" stroke-width="7"
+          stroke-dasharray="${circ*0.75} ${circ*0.25}" stroke-dashoffset="${offset}"
+          stroke-linecap="round" transform="rotate(135 44 44)" class="gauge-ring"/>
+        <text x="44" y="48" text-anchor="middle" fill="#1A1A2E" font-size="13" font-weight="bold">${Math.round(pct*100)}%</text>
+      </svg>`;
+    }
+
+    function renderUsageBars(data) {
+      const nAll = data.nemo || { prompt_tokens:0, completion_tokens:0, tts_characters:0, run_count:0, total_session_duration:0, total_turns:0, total_interruptions:0 };
+      const dAll = data.deep || { prompt_tokens:0, completion_tokens:0, tts_characters:0, run_count:0, total_session_duration:0, total_turns:0, total_interruptions:0 };
+
+      const itemDefs = [
+        { key: 'prompt_tokens', label: 'Total Prompt Tokens', tip: 'Total input tokens across all runs. Higher = more context consumed per conversation.' },
+        { key: 'completion_tokens', label: 'Total Completion Tokens', tip: 'Total output tokens generated. Higher = longer agent responses.' },
+        { key: 'tts_characters', label: 'Total TTS Characters', tip: 'Total characters synthesized to audio. Directly proportional to TTS cost.' },
+        { key: 'total_turns', label: 'Total Turns', tip: 'Sum of conversation turns across all runs. More turns may indicate more thorough conversations.' },
+        { key: 'total_interruptions', label: 'Total Interruptions', tip: 'Times the user interrupted (barge-in). High count may suggest agent is too slow or verbose.' },
+        { key: 'total_session_duration', label: 'Total Session Time (s)', tip: 'Combined wall-clock time for all sessions. Lower with same task = more efficient.', round: true },
+        { key: 'run_count', label: 'Runs', tip: 'Number of benchmark runs completed for this provider.' },
+      ];
+
+      ['nemo','deep'].forEach(provider => {
+        const d = provider === 'nemo' ? nAll : dAll;
+        const el = document.getElementById(`usage-bars-${provider}`);
+        const items = itemDefs.map(def => ({
+          label: def.label,
+          val: def.round ? Math.round(d[def.key] || 0) : (d[def.key] || 0),
+          tip: def.tip,
+        }));
+        const maxVal = Math.max(...items.map(i=>i.val), 1);
+        el.innerHTML = items.map(item => {
+          const pct = Math.round((item.val/maxVal)*100);
+          const color = provider==='nemo'?'#76b900':'#3b82f6';
+          return `<div class="mb-3" title="${item.tip}">
+            <div class="flex justify-between text-xs mb-1"><span class="text-gray-500">${item.label} <span style="cursor:help;color:#94a3b8">&#9432;</span></span><span class="text-gray-900 font-medium">${item.val.toLocaleString()}</span></div>
+            <div class="h-2 rounded-full bg-gray-200 overflow-hidden"><div class="h-full rounded-full" style="width:${pct}%;background:${color};"></div></div>
+          </div>`;
+        }).join('');
+      });
+
+      // Cross-provider comparison summary below the breakdown cards
+      const compEl = document.getElementById('usage-comparison');
+      if (compEl && (nAll.run_count > 0 || dAll.run_count > 0)) {
+        const comparisons = [
+          { label: 'Prompt Tokens / Run', nVal: nAll.run_count ? Math.round(nAll.prompt_tokens / nAll.run_count) : 0, dVal: dAll.run_count ? Math.round(dAll.prompt_tokens / dAll.run_count) : 0, lowerBetter: true, explain: 'Fewer prompt tokens per run means leaner context management. Helps stay within model limits and reduces cost.' },
+          { label: 'Completion Tokens / Run', nVal: nAll.run_count ? Math.round(nAll.completion_tokens / nAll.run_count) : 0, dVal: dAll.run_count ? Math.round(dAll.completion_tokens / dAll.run_count) : 0, lowerBetter: true, explain: 'Fewer completion tokens = more concise agent responses, faster TTS, and lower cost.' },
+          { label: 'TTS Chars / Run', nVal: nAll.run_count ? Math.round(nAll.tts_characters / nAll.run_count) : 0, dVal: dAll.run_count ? Math.round(dAll.tts_characters / dAll.run_count) : 0, lowerBetter: true, explain: 'Fewer TTS characters per run means the agent is more concise in speech output.' },
+          { label: 'Turns / Run', nVal: nAll.run_count ? (nAll.total_turns / nAll.run_count).toFixed(1) : 0, dVal: dAll.run_count ? (dAll.total_turns / dAll.run_count).toFixed(1) : 0, lowerBetter: false, explain: 'More turns per run may indicate more thorough conversations, but could also signal inefficiency if task is the same.' },
+          { label: 'Session Time / Run (s)', nVal: nAll.run_count ? Math.round(nAll.total_session_duration / nAll.run_count) : 0, dVal: dAll.run_count ? Math.round(dAll.total_session_duration / dAll.run_count) : 0, lowerBetter: true, explain: 'Shorter average session with same task completion = more efficient agent pipeline.' },
+        ];
+        compEl.innerHTML = comparisons.map(c => {
+          const nNum = parseFloat(c.nVal), dNum = parseFloat(c.dVal);
+          const badge = renderWinnerBadge(
+            nNum > 0 ? {avg: nNum} : null,
+            dNum > 0 ? {avg: dNum} : null,
+            c.lowerBetter
+          );
+          return `<div class="mb-4 p-3 rounded-lg" style="background:#F7F9FC;border:1px solid var(--border)">
+            <div class="flex justify-between items-center mb-1">
+              <span class="text-xs font-semibold text-gray-700">${c.label}</span>
+              <div class="flex gap-4 text-xs">
+                <span class="nemo-color font-bold">${typeof c.nVal === 'number' ? c.nVal.toLocaleString() : c.nVal}</span>
+                <span class="text-gray-400">vs</span>
+                <span class="deep-color font-bold">${typeof c.dVal === 'number' ? c.dVal.toLocaleString() : c.dVal}</span>
+              </div>
+            </div>
+            <div class="mt-1">${badge}</div>
+            <p class="text-[10px] text-gray-500 mt-1">${c.explain}</p>
+          </div>`;
+        }).join('');
+      }
+    }
+
+    // ── Run History ────────────────────────────────────────────────────────
+    async function loadRuns() {
+      try {
+        const res = await fetch(`${API}/api/telemetry/runs${getDateFilterParams()}`);
+        const runs = await res.json();
+        const tbody = document.getElementById('runs-tbody');
+        if (runs.length === 0) { tbody.innerHTML = '<tr><td colspan="4" class="px-4 py-6 text-center text-gray-500">No runs yet.</td></tr>'; return; }
+        tbody.innerHTML = runs.map(r => `
+          <tr class="border-b border-gray-200 hover:bg-gray-50">
+            <td class="px-4 py-3 font-mono text-xs">${r.run_id}</td>
+            <td class="px-4 py-3"><span class="px-2 py-1 rounded text-xs font-medium ${r.provider==='nemo'?'bg-[#76b900]/20 nemo-color':'bg-blue-500/20 deep-color'}">${r.provider==='nemo'?'Nemotron':'Deepgram'}</span></td>
+            <td class="px-4 py-3 text-gray-500">${r.metric_count} events</td>
+            <td class="px-4 py-3 text-gray-500 text-xs">${new Date(r.modified).toLocaleString()}</td>
+          </tr>`).join('');
+      } catch(e) {
+        document.getElementById('runs-tbody').innerHTML = '<tr><td colspan="4" class="px-4 py-6 text-center text-red-400">Server not reachable</td></tr>';
+      }
+    }
+
+    // ── ASR Evaluation ─────────────────────────────────────────────────────
+    let asrPollInterval = null;
+    let asrLogInterval = null;
+    let asrLogSince = 0;
+    let asrRunId = null;
+
+    async function startAsrEval() {
+      const provider = document.getElementById('asr-provider').value;
+      const dataset = document.getElementById('asr-dataset').value;
+      const samples = parseInt(document.getElementById('asr-samples').value) || 10;
+      const btn = document.getElementById('btn-asr-run');
+      const status = document.getElementById('asr-status');
+      const logEl = document.getElementById('asr-log');
+      const badge = document.getElementById('asr-log-badge');
+
+      btn.disabled = true; btn.classList.add('btn-disabled'); btn.textContent = 'Running...';
+      status.innerHTML = '<span class="text-yellow-600">Launching ASR evaluation...</span>';
+
+      // Reset log panel
+      logEl.innerHTML = '<div class="log-entry-header">ASR Evaluation Starting...</div>';
+      badge.textContent = 'Running';
+      badge.className = 'text-xs px-2 py-0.5 rounded bg-green-900 text-green-300';
+      asrLogSince = 0;
+
+      try {
+        const res = await fetch(`${API}/api/asr/evaluate`, {
+          method: 'POST', headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ provider, dataset, samples }),
+        });
+        const data = await res.json();
+        asrRunId = data.run_id;
+        status.innerHTML = `<span class="text-green-600">Evaluation started</span> — PID: ${data.pid}`;
+        loadRunning();
+
+        // Start polling logs
+        if (asrLogInterval) clearInterval(asrLogInterval);
+        asrLogInterval = setInterval(() => pollAsrLogs(data.run_id), 1500);
+
+        // Poll for completion
+        if (asrPollInterval) clearInterval(asrPollInterval);
+        asrPollInterval = setInterval(async () => {
+          const running = await fetch(`${API}/api/benchmark/running`).then(r => r.json());
+          const stillRunning = Object.values(running).some(r => r.mode === 'asr_eval' && r.status === 'running');
+          if (!stillRunning) {
+            clearInterval(asrPollInterval);
+            asrPollInterval = null;
+            clearInterval(asrLogInterval);
+            asrLogInterval = null;
+            // Final log fetch
+            await pollAsrLogs(data.run_id);
+            btn.disabled = false; btn.classList.remove('btn-disabled'); btn.textContent = 'Run Evaluation';
+            status.innerHTML = '<span class="text-green-600">Evaluation complete!</span>';
+            badge.textContent = 'Completed';
+            badge.className = 'text-xs px-2 py-0.5 rounded bg-blue-900 text-blue-300';
+            loadAsrResults();
+          }
+        }, 3000);
+      } catch(e) {
+        status.innerHTML = `<span class="text-red-600">Error: ${e.message}</span>`;
+        btn.disabled = false; btn.classList.remove('btn-disabled'); btn.textContent = 'Run Evaluation';
+        badge.textContent = 'Error';
+        badge.className = 'text-xs px-2 py-0.5 rounded bg-red-900 text-red-300';
+      }
+    }
+
+    function formatAsrLogLine(line) {
+      // Parse asr_eval log lines and colorize them
+      let badge = '';
+      let msg = line;
+      // Extract timestamp if present (format: 2024-05-11 20:30:00,123 INFO ...)
+      let ts = '';
+      const tsMatch = line.match(/^(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}),?\d*\s+(\w+)\s+(\S+)\s+(.*)/);
+      if (tsMatch) {
+        ts = tsMatch[1];
+        const level = tsMatch[2];
+        msg = tsMatch[4];
+        if (level === 'ERROR') badge = '<span class="log-badge" style="background:#dc2626;color:#fff">ERR</span>';
+        else if (level === 'WARNING') badge = '<span class="log-badge" style="background:#d97706;color:#fff">WARN</span>';
+      }
+      // Highlight WER values
+      if (msg.includes('WER=')) {
+        const werMatch = msg.match(/WER=([\d.]+)/);
+        if (werMatch) {
+          const wer = parseFloat(werMatch[1]);
+          const color = wer === 0 ? '#22c55e' : wer < 0.1 ? '#16a34a' : wer < 0.2 ? '#d97706' : '#dc2626';
+          msg = msg.replace(/WER=([\d.]+)/, `<span style="color:${color};font-weight:600">WER=${werMatch[1]}</span>`);
+        }
+      }
+      // Highlight COLD/WARM
+      msg = msg.replace(/\bCOLD\b/, '<span style="color:#ea580c;font-weight:600">COLD</span>');
+      msg = msg.replace(/\bWARM\b/, '<span style="color:#2563eb;font-weight:600">WARM</span>');
+      // Highlight RTF
+      if (msg.includes('RTF=')) {
+        const rtfMatch = msg.match(/RTF=([\d.]+)/);
+        if (rtfMatch) {
+          const rtf = parseFloat(rtfMatch[1]);
+          const color = rtf < 0.5 ? '#22c55e' : rtf < 1.0 ? '#d97706' : '#dc2626';
+          msg = msg.replace(/RTF=([\d.]+)/, `<span style="color:${color};font-weight:600">RTF=${rtfMatch[1]}</span>`);
+        }
+      }
+      // Highlight provider names
+      msg = msg.replace(/\[nemo\]/g, '<span style="color:#76b900;font-weight:600">[nemo]</span>');
+      msg = msg.replace(/\[deep\]/g, '<span style="color:#3b82f6;font-weight:600">[deep]</span>');
+      msg = msg.replace(/\[whisper\]/g, '<span style="color:#7c3aed;font-weight:600">[whisper]</span>');
+      // Highlight summary lines
+      if (msg.includes('Summary:') || msg.includes('COMPARISON')) {
+        badge = '<span class="log-badge" style="background:#2563eb;color:#fff">RESULT</span>';
+      }
+      return `<div class="log-entry">${ts ? `<span class="log-ts">${ts}</span>` : ''}${badge}<span class="log-msg">${msg}</span></div>`;
+    }
+
+    async function pollAsrLogs(runId) {
+      try {
+        const res = await fetch(`${API}/api/benchmark/logs/${runId}?since=${asrLogSince}`);
+        const data = await res.json();
+        if (data.lines.length === 0) return;
+        asrLogSince = data.total;
+        const logEl = document.getElementById('asr-log');
+        const html = data.lines.map(line => formatAsrLogLine(line)).join('');
+        logEl.innerHTML += html;
+        logEl.scrollTop = logEl.scrollHeight;
+      } catch(e) {}
+    }
+
+    const ASR_PROV_COLORS = {
+      nemo:    { label: 'Nemotron (Parakeet)', color: '#76b900', bg: 'bg-[#76b900]/10', cls: 'nemo-color' },
+      deep:    { label: 'Deepgram (Nova)',     color: '#3b82f6', bg: 'bg-blue-500/10',   cls: 'deep-color' },
+      whisper: { label: 'OpenAI Whisper',      color: '#7c3aed', bg: 'bg-purple-500/10', cls: 'text-purple-700' },
+    };
+    let asrCharts = {};
+
+    function _asrProvStyle(p) { return ASR_PROV_COLORS[p] || ASR_PROV_COLORS.deep; }
+
+    function _asrWinnerBadge(items, key, lowerBetter = true) {
+      const valid = items.filter(r => r[key] != null);
+      if (valid.length < 2) return { html: '', winner: null };
+      const sorted = [...valid].sort((a, b) => lowerBetter ? a[key] - b[key] : b[key] - a[key]);
+      const best = sorted[0], second = sorted[1];
+      const pct = second[key] !== 0 ? Math.abs((best[key] - second[key]) / second[key] * 100).toFixed(0) : 0;
+      const ps = _asrProvStyle(best.provider);
+      const isTie = Math.abs(best[key] - second[key]) / Math.max(Math.abs(second[key]), 0.0001) < 0.02;
+      if (isTie) return { html: '<span class="text-xs font-semibold text-gray-500">&#129309; Tie</span>', winner: null };
+      return {
+        html: `<span class="text-xs font-semibold" style="color:${ps.color}">&#127942; ${ps.label} wins (${pct}% ${lowerBetter?'lower':'higher'})</span>`,
+        winner: best.provider
+      };
+    }
+
+    function _destroyAsrCharts() {
+      Object.values(asrCharts).forEach(c => c.destroy());
+      asrCharts = {};
+    }
+
+    function _renderAsrComparisonCharts(latest) {
+      _destroyAsrCharts();
+      const labels = latest.map(r => _asrProvStyle(r.provider).label);
+      const colors = latest.map(r => _asrProvStyle(r.provider).color);
+      const colorsAlpha = colors.map(c => c + '33');
+      const barOpts = (ylabel) => ({
+        responsive: true, plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, title: { display: true, text: ylabel, font: { size: 10 } } },
+                  x: { ticks: { font: { size: 9 } } } }
+      });
+
+      // WER Chart
+      const werCtx = document.getElementById('asr-chart-wer');
+      if (werCtx) {
+        asrCharts.wer = new Chart(werCtx, {
+          type: 'bar',
+          data: {
+            labels,
+            datasets: [{
+              label: 'Avg WER %', data: latest.map(r => r.avg_wer != null ? +(r.avg_wer*100).toFixed(1) : 0),
+              backgroundColor: colorsAlpha, borderColor: colors, borderWidth: 2
+            }]
+          },
+          options: barOpts('WER (%)')
+        });
+      }
+
+      // RTF Chart
+      const rtfCtx = document.getElementById('asr-chart-rtf');
+      if (rtfCtx) {
+        asrCharts.rtf = new Chart(rtfCtx, {
+          type: 'bar',
+          data: {
+            labels,
+            datasets: [{
+              label: 'Avg RTF', data: latest.map(r => r.avg_rtf != null ? +r.avg_rtf.toFixed(4) : 0),
+              backgroundColor: colorsAlpha, borderColor: colors, borderWidth: 2
+            }]
+          },
+          options: {
+            ...barOpts('RTF (lower = faster)'),
+            plugins: {
+              legend: { display: false },
+              annotation: { annotations: {
+                line1: { type: 'line', yMin: 1, yMax: 1, borderColor: '#dc2626', borderDash: [4,4], borderWidth: 1,
+                  label: { display: true, content: 'Real-time', position: 'end', font: { size: 9 }, color: '#dc2626' } }
+              }}
+            }
+          }
+        });
+      }
+
+      // Latency Cold/Warm Chart
+      const latCtx = document.getElementById('asr-chart-latency');
+      if (latCtx) {
+        asrCharts.latency = new Chart(latCtx, {
+          type: 'bar',
+          data: {
+            labels,
+            datasets: [
+              { label: 'Cold Start (ms)', data: latest.map(r => r.cold_start_ms || 0),
+                backgroundColor: colors.map(c => c + '66'), borderColor: colors, borderWidth: 2 },
+              { label: 'Avg Warm (ms)', data: latest.map(r => r.avg_warm_ms || 0),
+                backgroundColor: colorsAlpha, borderColor: colors, borderWidth: 2, borderDash: [3,3] },
+            ]
+          },
+          options: { ...barOpts('Latency (ms)'), plugins: { legend: { display: true, labels: { font: { size: 10 } } } } }
+        });
+      }
+
+      // Per-sample WER distribution (box-like via scatter)
+      const distCtx = document.getElementById('asr-chart-wer-dist');
+      if (distCtx) {
+        const datasets = latest.map((r, i) => {
+          const samples = (r.results || []).filter(s => s.wer != null && !s.error);
+          return {
+            label: _asrProvStyle(r.provider).label,
+            data: samples.map((s, j) => ({ x: j + 1, y: +(s.wer * 100).toFixed(1) })),
+            backgroundColor: _asrProvStyle(r.provider).color + '88',
+            borderColor: _asrProvStyle(r.provider).color,
+            pointRadius: 5, pointHoverRadius: 7, showLine: true, tension: 0.3, fill: false, borderWidth: 2,
+          };
+        });
+        asrCharts.dist = new Chart(distCtx, {
+          type: 'scatter',
+          data: { datasets },
+          options: {
+            responsive: true,
+            plugins: { legend: { display: true, labels: { font: { size: 10 } } } },
+            scales: {
+              x: { title: { display: true, text: 'Sample #', font: { size: 10 } }, ticks: { stepSize: 1 } },
+              y: { beginAtZero: true, title: { display: true, text: 'WER (%)', font: { size: 10 } } }
+            }
+          }
+        });
+      }
+    }
+
+    function _asrRunStatus(r) {
+      if (r.evaluated === 0 && r.errors > 0) return { label: 'Failed', cls: 'bg-red-100 text-red-700' };
+      if (r.errors > 0 && r.evaluated > 0) return { label: 'Partial', cls: 'bg-yellow-100 text-yellow-700' };
+      if (r.evaluated > 0) return { label: 'Success', cls: 'bg-green-100 text-green-700' };
+      return { label: 'Empty', cls: 'bg-gray-100 text-gray-500' };
+    }
+
+    async function loadAsrResults() {
+      try {
+        const res = await fetch(`${API}/api/asr/results`);
+        const allResults = await res.json();
+        const container = document.getElementById('asr-results');
+        const compSection = document.getElementById('asr-comparison');
+        const countEl = document.getElementById('asr-result-count');
+        const filter = document.getElementById('asr-filter')?.value || 'successful';
+        const provFilter = document.getElementById('asr-filter-provider')?.value || 'all';
+
+        if (!allResults || allResults.length === 0) {
+          container.innerHTML = '<p class="text-sm text-gray-500">No ASR evaluations yet. Run one above.</p>';
+          compSection.classList.add('hidden');
+          if (countEl) countEl.textContent = '';
+          _destroyAsrCharts();
+          return;
+        }
+
+        // Successful runs = those with evaluated > 0 and avg_wer != null
+        const successfulRuns = allResults.filter(r => r.evaluated > 0 && r.avg_wer != null);
+
+        // Aggregate stats per provider across ALL successful runs (not just latest)
+        const providerAgg = {};
+        successfulRuns.forEach(r => {
+          if (!providerAgg[r.provider]) providerAgg[r.provider] = { runs: [], wers: [], rtfs: [], warm_ms: [], cold_ms: [] };
+          const agg = providerAgg[r.provider];
+          agg.runs.push(r);
+          if (r.avg_wer != null) agg.wers.push(r.avg_wer);
+          if (r.avg_rtf != null) agg.rtfs.push(r.avg_rtf);
+          if (r.avg_warm_ms != null) agg.warm_ms.push(r.avg_warm_ms);
+          if (r.cold_start_ms != null) agg.cold_ms.push(r.cold_start_ms);
+        });
+
+        // Build comparison data with run counts
+        const compData = Object.entries(providerAgg).map(([prov, agg]) => ({
+          provider: prov,
+          run_count: agg.runs.length,
+          avg_wer: agg.wers.length ? agg.wers.reduce((a,b)=>a+b,0)/agg.wers.length : null,
+          avg_rtf: agg.rtfs.length ? agg.rtfs.reduce((a,b)=>a+b,0)/agg.rtfs.length : null,
+          avg_warm_ms: agg.warm_ms.length ? +(agg.warm_ms.reduce((a,b)=>a+b,0)/agg.warm_ms.length).toFixed(1) : null,
+          cold_start_ms: agg.cold_ms.length ? +(agg.cold_ms.reduce((a,b)=>a+b,0)/agg.cold_ms.length).toFixed(1) : null,
+          // For per-sample distribution, use all samples from all runs
+          results: agg.runs.flatMap(r => (r.results||[]).filter(s => s.wer != null && !s.error)),
+        }));
+
+        // Render comparison section if 2+ providers with data
+        if (compData.length >= 2) {
+          compSection.classList.remove('hidden');
+
+          const metrics = [
+            { key: 'avg_wer', label: 'Best WER', lower: true, fmt: v => (v*100).toFixed(1)+'%' },
+            { key: 'avg_rtf', label: 'Fastest RTF', lower: true, fmt: v => v.toFixed(3) },
+            { key: 'avg_warm_ms', label: 'Lowest Warm Latency', lower: true, fmt: v => v+'ms' },
+            { key: 'cold_start_ms', label: 'Fastest Cold Start', lower: true, fmt: v => v+'ms' },
+          ];
+          document.getElementById('asr-winner-cards').innerHTML = metrics.map(m => {
+            const badge = _asrWinnerBadge(compData, m.key, m.lower);
+            const best = [...compData].filter(r => r[m.key] != null).sort((a,b) => m.lower ? a[m.key]-b[m.key] : b[m.key]-a[m.key])[0];
+            const bestPs = best ? _asrProvStyle(best.provider) : null;
+            return `<div class="card p-4 text-center">
+              <p class="text-[10px] text-gray-500 uppercase tracking-wider mb-1">${m.label}</p>
+              <p class="text-xl font-bold" style="color:${bestPs?bestPs.color:'#666'}">${best && best[m.key] != null ? m.fmt(best[m.key]) : '—'}</p>
+              <div class="mt-1">${badge.html}</div>
+              <p class="text-[9px] text-gray-400 mt-1">across ${compData.map(c => `${_asrProvStyle(c.provider).label}: ${c.run_count} run${c.run_count!==1?'s':''}`).join(' · ')}</p>
+            </div>`;
+          }).join('');
+
+          _renderAsrComparisonCharts(compData);
+        } else {
+          compSection.classList.add('hidden');
+          _destroyAsrCharts();
+        }
+
+        // Apply filters for detailed results list
+        let filtered = allResults;
+        if (filter === 'successful') filtered = filtered.filter(r => r.evaluated > 0 && r.avg_wer != null);
+        else if (filter === 'errors') filtered = filtered.filter(r => r.errors > 0);
+        if (provFilter !== 'all') filtered = filtered.filter(r => r.provider === provFilter);
+
+        // Sort newest first
+        filtered.sort((a,b) => (b.timestamp||'').localeCompare(a.timestamp||''));
+
+        if (countEl) countEl.textContent = `Showing ${filtered.length} of ${allResults.length} runs`;
+
+        if (filtered.length === 0) {
+          container.innerHTML = '<p class="text-sm text-gray-500">No runs match the selected filter.</p>';
+          return;
+        }
+
+        container.innerHTML = filtered.map(r => {
+          const ps = _asrProvStyle(r.provider);
+          const status = _asrRunStatus(r);
+          const werColor = r.avg_wer !== null ? (r.avg_wer < 0.1 ? 'text-green-600' : r.avg_wer < 0.2 ? 'text-yellow-600' : 'text-red-600') : 'text-gray-400';
+          const rtfColor = r.avg_rtf !== null ? (r.avg_rtf < 0.5 ? 'text-green-600' : r.avg_rtf < 1.0 ? 'text-yellow-600' : 'text-red-600') : 'text-gray-400';
+
+          const samplesHtml = (r.results || []).map(s => {
+            const sWerColor = s.wer !== null ? (s.wer === 0 ? 'text-green-600' : s.wer < 0.1 ? 'text-green-500' : s.wer < 0.2 ? 'text-yellow-600' : 'text-red-600') : 'text-gray-400';
+            const hasError = s.error ? ' <span class="text-red-400 text-[10px]" title="' + escHtml(s.error) + '">ERR</span>' : '';
+            return `<tr class="border-b border-gray-100 text-xs">
+              <td class="px-3 py-2 font-mono text-gray-500">${s.sample_id}${s.is_cold ? ' <span class="text-orange-500 font-semibold">COLD</span>' : ''}${hasError}</td>
+              <td class="px-3 py-2 ${sWerColor} font-semibold">${s.wer !== null && s.wer !== undefined ? (s.wer * 100).toFixed(1) + '%' : '—'}</td>
+              <td class="px-3 py-2 text-gray-600">${s.stt_ms != null ? s.stt_ms + 'ms' : '—'}</td>
+              <td class="px-3 py-2 text-gray-600">${s.rtf != null ? s.rtf.toFixed(3) : '—'}</td>
+              <td class="px-3 py-2 text-gray-500" title="${escHtml(s.reference || '')}">${(s.reference || '').substring(0, 45)}${(s.reference || '').length > 45 ? '...' : ''}</td>
+              <td class="px-3 py-2 text-gray-500" title="${escHtml(s.hypothesis || '')}">${(s.hypothesis || '').substring(0, 45)}${(s.hypothesis || '').length > 45 ? '...' : ''}</td>
+            </tr>`;
+          }).join('');
+
+          return `<div class="card p-5 ${ps.bg}">
+            <div class="flex items-center justify-between mb-3">
+              <div>
+                <div class="flex items-center gap-2">
+                  <h4 class="text-sm font-semibold ${ps.cls}">${ps.label}</h4>
+                  <span class="text-[10px] px-2 py-0.5 rounded-full font-medium ${status.cls}">${status.label}</span>
+                </div>
+                <p class="text-xs text-gray-500">${r.model_name || ''} — ${r.dataset_name || r.dataset_id} — ${r.evaluated}/${r.total_samples} samples${r.errors ? ' · <span class="text-red-500">' + r.errors + ' errors</span>' : ''}</p>
+              </div>
+              <div class="text-right">
+                <p class="text-2xl font-bold ${werColor}">${r.avg_wer !== null ? (r.avg_wer * 100).toFixed(1) + '%' : '—'}</p>
+                <p class="text-[10px] text-gray-500">Average WER</p>
+              </div>
+            </div>
+            <div class="grid grid-cols-4 gap-3 mb-3">
+              <div class="text-center p-2 rounded-lg bg-white/60">
+                <p class="text-lg font-bold ${rtfColor}">${r.avg_rtf !== null ? r.avg_rtf.toFixed(3) : '—'}</p>
+                <p class="text-[10px] text-gray-500">Avg RTF</p>
+              </div>
+              <div class="text-center p-2 rounded-lg bg-white/60">
+                <p class="text-lg font-bold text-orange-600">${r.cold_start_ms !== null ? r.cold_start_ms + 'ms' : '—'}</p>
+                <p class="text-[10px] text-gray-500">Cold Start</p>
+              </div>
+              <div class="text-center p-2 rounded-lg bg-white/60">
+                <p class="text-lg font-bold text-blue-600">${r.avg_warm_ms !== null ? r.avg_warm_ms + 'ms' : '—'}</p>
+                <p class="text-[10px] text-gray-500">Avg Warm</p>
+              </div>
+              <div class="text-center p-2 rounded-lg bg-white/60">
+                <p class="text-lg font-bold text-gray-700">${r.avg_latency_ms !== null ? r.avg_latency_ms + 'ms' : '—'}</p>
+                <p class="text-[10px] text-gray-500">Avg Latency</p>
+              </div>
+            </div>
+            <div class="text-xs text-gray-500 mb-2">${r.timestamp ? new Date(r.timestamp).toLocaleString() : ''}</div>
+            <details class="mt-2">
+              <summary class="text-xs font-semibold text-gray-600 cursor-pointer hover:text-gray-900">Show per-sample results (${(r.results||[]).length} samples)</summary>
+              <div class="mt-2 overflow-x-auto">
+                <table class="w-full text-left">
+                  <thead><tr class="text-[10px] text-gray-500 uppercase">
+                    <th class="px-3 py-1">ID</th><th class="px-3 py-1">WER</th><th class="px-3 py-1">Latency</th><th class="px-3 py-1">RTF</th><th class="px-3 py-1">Reference</th><th class="px-3 py-1">Hypothesis</th>
+                  </tr></thead>
+                  <tbody>${samplesHtml}</tbody>
+                </table>
+              </div>
+            </details>
+          </div>`;
+        }).join('');
+      } catch(e) {
+        document.getElementById('asr-results').innerHTML = '<p class="text-sm text-red-500">Failed to load ASR results.</p>';
+      }
+    }
+
+    // ── Utilities ──────────────────────────────────────────────────────────
+    async function clearTelemetry() {
+      if (!confirm('Delete all telemetry data?')) return;
+      await fetch(`${API}/api/telemetry/clear`, {method:'DELETE'});
+      refreshAll();
+    }
+    function refreshAll() {
+      loadRunning();
+      const t = document.querySelector('.tab-active')?.id?.replace('tab-','');
+      if (t==='dashboard') loadDashboard();
+      if (t==='trends') loadTrends();
+      if (t==='usage') loadUsage();
+      if (t==='runs') loadRuns();
+      if (t==='asr') loadAsrResults();
+    }
+
+    // Initial load + polling
+    loadRunning();
+    setInterval(loadRunning, 3000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+Call ID: AD_Q8KV7jPV9s5V
+Date: 2026-04-28 16:02:50
+Caller: McAllister Construction, Co.
+Phone: +919916226148
+Disposition: Transferred to Human Agent
+Notes: 
+
+--- Summary ---
+The AI agent confirmed Ranjith's delivery scheduled for next Tuesday at 3pm, assuring no delays. The customer requested a call to his brother and then asked to speak with a human agent, which the AI agent facilitated by transferring the call.
+
+--- Transcript ---
+  Agent: Hello Ranjith S, this is your scheduling assistant from PRO Delivery at Lowes Home Improvement. I'm calling to confirm the details of your upcoming delivery. Do you have a moment to go over that?
+  Customer: I'm busy
+  Customer: I'm busy, but if you can cover it
+  Customer: I'm busy, but if you can cover it fast,
+  Customer: I'm busy, but if you can cover it fast,
+  Customer: I'm busy, but if you can cover it fast,
+  Customer: can able to talk for a
+  Customer: can able to talk for a minute.
+  Customer: can able to talk for a minute.
+  Customer: can able to talk for a minute.
+  Agent: Thank you, Ranjith. I'll be quick. Your delivery is scheduled for next Tuesday at 3pm. Could you please confirm if this date and time still work for you?
+  Customer: Yeah. Well, for me,
+  Customer: Yeah. We'll
+  Customer: Yeah. We'll
+  Customer: Yeah. We'll
+  Customer: but make sure it doesn't
+  Customer: but make sure it doesn't
+  Customer: but make sure it doesn't
+  Customer: but make sure it doesn't
+  Customer: change. Or you guys
+  Customer: change or you guys don't delay.
+  Customer: change or you guys don't delay.
+  Customer: change or you guys don't delay.
+  Agent: I understand the importance of timely delivery, Ranjith. We will do our best to ensure your delivery arrives exactly as scheduled next Tuesday at 3pm. I will now confirm your appointment for that date and time.
+  Customer: Awesome. Please go ahead.
+  Customer: Awesome. Please go ahead.
+  Customer: Awesome. Please go ahead.
+  Agent: Your delivery for
+  Agent: Your delivery is confirmed for next Tuesday at 3pm. Is there anything else I can assist you with today, or would you like to end the call?
+  Customer: Can you
+  Customer: Can you
+  Customer: Can you
+  Customer: can
+  Customer: call
+  Customer: call
+  Customer: call
+  Customer: call
+  Customer: of my my
+  Customer: of my my brother also to check
+  Customer: of my my brother also to check
+  Customer: of my my brother also to check
+  Customer: of my my brother also to check
+  Customer: if he is with that at
+  Customer: if he will be there at home.
+  Customer: if he will be there at home.
+  Customer: if he will be there at home.
+  Agent: I’m here to assist specifically with your delivery scheduling, Ranjith. I’m unable to make calls to others. Would you like me to send you a reminder to check with your brother or help with anything else related to your delivery?
+  Customer: Can I
+  Customer: Can I talk to
+  Customer: Can I talk to a human
+  Customer: Can I talk to a human agent?
+  Customer: Can I talk to a human agent?
+  Customer: Can I talk to a human agent?
+  Agent: I can connect you to a human agent. Would you like me to transfer the call now?
+  Customer: Yes,
+  Customer: Yes.
+  Customer: Yes.
+  Customer: Yes.
+  Agent: I have connected you to a human agent now. Thank you for choosing Lowes Professional Delivery. Have a great day!

@@ -1,0 +1,83 @@
+Call ID: AD_buQ9rSCtKQ39
+Date: 2026-04-28 14:46:13
+Caller: McAllister Construction, Co.
+Phone: +919986045406
+Disposition: Transferred to Human Agent
+Notes: 
+
+--- Summary ---
+The AI agent confirmed the customer's delivery originally scheduled for Tuesday at 3pm, then successfully rescheduled it to Thursday at 3pm upon the customer's request. When the customer asked about loyalty benefits, the AI agent transferred the call to a human agent for further assistance.
+
+--- Transcript ---
+  Agent: Hello Ranjith S., this is a scheduling assistant from the PRO Delivery at Lowes Home Improvement. I'm calling to confirm the details of your upcoming delivery. Is now a good time to discuss it?
+  Customer: Yes. It's a good thing.
+  Customer: Yes. It's a good time.
+  Customer: Yes. It's a good time.
+  Customer: Yes. It's a good time.
+  Agent: Thank you, Ranjith. Your delivery is scheduled for next Tuesday at 3pm. Does this date and time still work for you?
+  Customer: Yes. It's okay.
+  Customer: Yes. It's okay.
+  Customer: Yes. It's okay.
+  Agent: Thank you for confirming, Ranjith. Your delivery is all set for next Tuesday at 3pm. Is there anything else I can assist you with today?
+  Customer: What
+  Customer: What if I want to change
+  Customer: What if I want to change the delivery
+  Customer: What if I want to change the delivery
+  Customer: What if I want to change the delivery
+  Customer: What if I want to change the delivery
+  Customer: time?
+  Customer: time?
+  Customer: time?
+  Agent: I can check the availability of alternative delivery times for you. Could you please let me know which date you are interested in for a new delivery time?
+  Customer: I
+  Customer: I would say in
+  Customer: I would say in place of
+  Customer: I would say in place of
+  Customer: I would say in place of
+  Customer: Tuesday, let's do
+  Customer: Tuesday, let's do it on Thursday.
+  Customer: Tuesday, let's do it on Thursday.
+  Customer: Tuesday, let's do it on Thursday.
+  Customer: Tuesday, let's do it on Thursday.
+  Agent: On Thursday, we have available delivery times at 1pm, 2pm, and 3pm. Which time would you prefer for your delivery?
+  Customer: CPM would be
+  Customer: CPM would be good.
+  Customer: CPM would be good.
+  Customer: CPM would be good.
+  Agent: Just to confirm, you would like to reschedule your delivery to Thursday at 3pm, is that correct?
+  Customer: Yes.
+  Customer: Yes.
+  Customer: Yes.
+  Customer: Correct.
+  Customer: Correct.
+  Customer: Correct.
+  Agent: Your delivery has been rescheduled to Thursday at 3pm. Is there anything else I can assist you with?
+  Customer: Okay. Can you please
+  Customer: Okay. Can you please tell me a
+  Customer: Okay. Can you please tell me under which tire
+  Customer: Can you please tell me under which tire I am
+  Customer: Can you please tell me under which tire I am
+  Customer: Can you please tell me under which tire I am
+  Customer: for the
+  Customer: for the loyalty benefits?
+  Customer: for the loyalty benefits?
+  Customer: for the loyalty benefits?
+  Customer: for the loyalty benefits?
+  Agent: I’m here to assist with delivery scheduling and confirming your delivery details. For questions regarding your loyalty benefits tier, I can transfer you to a human agent who can provide that information. Would you like me to connect you now?
+  Customer: None.
+  Customer: None.
+  Customer: None.
+  Customer: Okay. Connect.
+  Customer: Okay. Connect.
+  Customer: Okay. Connect.
+  Customer: Okay. Connect.
+  Agent: Just to confirm, you would like to be transferred to a human agent now?
+  Customer: Yes.
+  Customer: Yes.
+  Customer: Yes.
+  Agent: You are now connected to a human agent for further assistance. Thank you for calling Lowes Home Improvement Professional Delivery. Have a great day!
+  Customer: Hello?
+  Customer: Hello?
+  Customer: Hello?
+  Customer: Hello?
+  Agent: Hello! You are now connected to a human agent. They will assist you further with your inquiry. If you need anything else from me before then, please let me know!

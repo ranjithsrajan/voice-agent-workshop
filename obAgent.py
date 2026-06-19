@@ -18,8 +18,8 @@ from livekit.agents import (
     get_job_context,
     cli,
     WorkerOptions,
-    RoomInputOptions,
 )
+from livekit.agents.voice.room_io import RoomOptions, AudioInputOptions
 from livekit.plugins import (
     deepgram,
     openai,
@@ -59,7 +59,7 @@ class OutboundCaller(Agent):
 
     async def on_enter(self) -> None:
         await self.session.generate_reply(
-            instructions="Greet the PRO Customer by name, introduce yourself as a scheduling assistant from the PRO Delivery, and let them know you're calling about their upcoming Delivery."
+            instructions="Greet the Pro Customer by name, introduce yourself as a scheduling assistant from the PRO Delivery, and let them know you're calling about their upcoming Delivery."
         )
 
     def set_participant(self, participant: rtc.RemoteParticipant):
@@ -172,7 +172,7 @@ async def entrypoint(ctx: JobContext):
 
     # look up the user's phone number and Delivery details
     agent = OutboundCaller(
-        name="Kishore",
+        name="Ranjith",
         delivery_time="next Tuesday at 3pm",
         dial_info=dial_info,
     )
@@ -206,13 +206,45 @@ async def entrypoint(ctx: JobContext):
         logger.info(f"participant joined: {participant.identity}")
         agent.set_participant(participant)
 
+        # Publish user STT transcription to the room so external listeners can see it
+        _user_seg_counter = [0]
+
+        @session.on("user_input_transcribed")
+        def on_user_transcribed(event):
+            if not event.is_final:
+                return  # skip interim — only publish final to avoid duplicates
+
+            async def _publish():
+                try:
+                    _user_seg_counter[0] += 1
+                    seg_id = f"user_seg_{_user_seg_counter[0]}"
+                    attrs = {
+                        "lk.transcription_final": "true",
+                        "lk.segment_id": seg_id,
+                    }
+                    writer = await ctx.room.local_participant.stream_text(
+                        topic="lk.transcription",
+                        sender_identity=participant_identity,
+                        attributes=attrs,
+                    )
+                    await writer.write(event.transcript)
+                    await writer.aclose()
+                    logger.info(f"published user transcript: '{event.transcript}'")
+                except Exception as e:
+                    logger.error(f"error publishing user transcription: {e}")
+
+            asyncio.ensure_future(_publish())
+
         # now start the session — on_enter greeting will be heard by the callee
         await session.start(
             agent=agent,
             room=ctx.room,
-            room_input_options=RoomInputOptions(
-                # enable Krisp background voice and noise removal
-                noise_cancellation=noise_cancellation.BVCTelephony(),
+            room_options=RoomOptions(
+                audio_input=AudioInputOptions(
+                    noise_cancellation=noise_cancellation.BVCTelephony(),
+                ),
+                participant_identity=participant_identity,
+                close_on_disconnect=False,
             ),
         )
 

@@ -1,0 +1,53 @@
+Call ID: AD_g4dCeiJSYVaL
+Date: 2026-04-29 10:47:33
+Caller: McAllister Construction, Co.
+Phone: +919886562101
+Disposition: Transferred to Human Agent
+Notes: 
+
+--- Summary ---
+The AI agent called Ranjith to confirm his delivery scheduled for next Tuesday at 3 PM. Ranjith requested to change the time to 4 PM, which was unavailable, and then declined other available times. He asked to speak with a human agent and was transferred accordingly.
+
+--- Transcript ---
+  Agent: Hello Ranjith S, this is your scheduling assistant from the Lowes Home Improvement PRO Delivery. I'm calling to confirm the details of your upcoming delivery. Is now a good time to go over the information?
+  Customer: Yes.
+  Customer: Yes.
+  Customer: Yes.
+  Customer: Yes.
+  Customer: I can see.
+  Customer: I can see.
+  Customer: I can see.
+  Customer: I can see.
+  Agent: Thank you, Ranjith. Your delivery
+  Agent: I just want to confirm, Ranjith, your delivery is scheduled for next Tuesday at 3 PM. Does that still work for you?
+  Customer: No.
+  Customer: No.
+  Customer: No.
+  Customer: Can you make
+  Customer: Can you make it four?
+  Customer: Can you make it four?
+  Customer: Can you make it four?
+  Agent: I can check the availability for a delivery at 4 PM next Tuesday for you. One moment please.
+  Agent: I checked the availability for next Tuesday, but unfortunately, 4 PM is not available. The available delivery times are 1 PM, 2 PM, and 3 PM. Would you like to select one of these available times?
+  Customer: No.
+  Customer: No.
+  Customer: No.
+  Agent: I understand. Would you like me to check availability for a different day, or is there anything else I can assist you with regarding your delivery?
+  Customer: Can you
+  Customer: Can you
+  Customer: Can you
+  Customer: can I
+  Customer: can I talk to someone?
+  Customer: can I talk to someone?
+  Customer: can I talk to someone?
+  Agent: I can transfer you to a human agent. Just to confirm, would you like me to connect you now?
+  Customer: Yes.
+  Customer: Yes, please.
+  Customer: Yes, please.
+  Customer: Yes, please.
+  Agent: I have connected you to a human agent now. If you need any further assistance in the future, feel free to reach out. Have a great day!
+  Customer: Thank you.
+  Customer: Thank you.
+  Customer: Thank you.
+  Customer: Also,
+  Agent: You're welcome, Ranjith! Take care. Goodbye!

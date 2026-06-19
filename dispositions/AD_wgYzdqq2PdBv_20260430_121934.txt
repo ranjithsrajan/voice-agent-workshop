@@ -1,0 +1,73 @@
+Call ID: AD_wgYzdqq2PdBv
+Date: 2026-04-30 12:19:34
+Caller: McAllister Construction, Co.
+Phone: +919632325994
+Disposition: Transferred to Human Agent
+Notes: 
+
+--- Summary ---
+The AI agent contacted Ranjith S. to confirm a delivery scheduled for next Tuesday at 3pm, but the customer requested to have the delivery today instead. The agent rescheduled the delivery for 1pm today and then transferred the call to a human agent at the customer's request for further assistance.
+
+--- Transcript ---
+  Agent: Hello Ranjith S., this is the scheduling assistant from PRO Delivery. I'm calling to confirm the details of your upcoming delivery. How are you today?
+  Customer: I'm good.
+  Customer: I'm good. Thank you.
+  Customer: I'm good. Thank you.
+  Customer: I'm good. Thank you.
+  Agent: That's great to hear! I want to confirm your delivery scheduled for next Tuesday at 3pm. Does that time still work for you?
+  Customer: No. I want to touch.
+  Customer: No. I want to turn me.
+  Customer: No. I want to turn me.
+  Customer: No. I want to turn me.
+  Agent: Just to confirm, did you mean you'd like to change the delivery time to 2pm?
+  Customer: No one
+  Customer: No. I want it
+  Customer: No. I want it
+  Customer: No. I want it
+  Customer: early.
+  Customer: early.
+  Customer: early.
+  Customer: Want it today.
+  Customer: Want it today.
+  Customer: Want it today.
+  Customer: Want it today.
+  Agent: I understand you'd like to have your delivery today. Let me check the availability for delivery today for you. One moment, please.
+  Agent: We do have available delivery slots today at 1pm, 2pm, and 3pm. Would you prefer any of these times for your delivery today?
+  Customer: Yes.
+  Customer: Yes.
+  Customer: Yes.
+  Customer: Yes.
+  Agent: Could you please specify which time today you'd like your delivery: 1pm, 2pm, or 3pm?
+  Customer: Any
+  Customer: Any.
+  Customer: Any.
+  Customer: Any.
+  Customer: Okay.
+  Customer: Okay.
+  Agent: To confirm, you would like your delivery today at 1pm, correct?
+I want to make sure to schedule your delivery
+  Customer: Okay.
+  Agent: Your delivery has been confirmed for today at 1pm. Is there anything else I can assist you with regarding your delivery?
+  Customer: Can I speak
+  Customer: Can I speak to someone?
+  Customer: Can I speak to someone?
+  Customer: Can I speak to someone?
+  Agent: I can connect you to a human agent. Do you want me to transfer your call now?
+  Customer: Yes.
+  Customer: Yes.
+  Customer: Yes.
+  Customer: Yes.
+  Customer: Ranjit,
+  Customer: Ranjit.
+  Customer: Ranjit.
+  Customer: Ranjit.
+  Agent: You are
+  Customer: I want my order
+  Customer: I want my order now.
+  Customer: I want my order now.
+  Customer: I want my order now.
+  Agent: Hello Ranjith, I understand you want your order as soon as possible. The human agent is on the line now and will assist you further with your request. Is there anything else I can do for you in the meantime?
+  Customer: No. Thank you.
+  Customer: No. Thank you.
+  Customer: No. Thank you.
+  Customer: No. Thank you.

@@ -1,0 +1,113 @@
+{
+  "provider": "deep",
+  "model_name": "Deepgram Nova-3",
+  "dataset_id": "retail_domain",
+  "dataset_name": "Retail Domain (Lowe's)",
+  "total_samples": 10,
+  "evaluated": 4,
+  "errors": 6,
+  "avg_wer": 0.5038,
+  "min_wer": 0.3125,
+  "max_wer": 0.7692,
+  "cold_start_ms": 10825.6,
+  "avg_warm_ms": 9154.0,
+  "avg_latency_ms": 9571.9,
+  "min_latency_ms": 5837.8,
+  "max_latency_ms": 10828.8,
+  "avg_rtf": 1.5205,
+  "min_rtf": 0.9122,
+  "max_rtf": 2.076,
+  "results": [
+    {
+      "sample_id": "rt001",
+      "reference": "I need to check on order number seven eight four five two three for some power tools I ordered last week",
+      "hypothesis": "seven eight four five two three for some power tools I ordered last week.",
+      "wer": 0.3333,
+      "tts_time": 2.216,
+      "stt_time": 10.826,
+      "stt_ms": 10825.6,
+      "rtf": 1.2888,
+      "audio_duration_est": 8.4,
+      "is_cold": true
+    },
+    {
+      "sample_id": "rt002",
+      "reference": "Do you have the Samsung French Door refrigerator model RF28R7551SR in stainless steel",
+      "hypothesis": "in stainless steel.",
+      "wer": 0.7692,
+      "tts_time": 33.292,
+      "stt_time": 10.795,
+      "stt_ms": 10795.4,
+      "rtf": 2.076,
+      "audio_duration_est": 5.2,
+      "is_cold": false
+    },
+    {
+      "sample_id": "rt003",
+      "reference": "I am looking for a DeWalt twenty volt max cordless drill with the brushless motor",
+      "hypothesis": "cordless drill with the brushless motor.",
+      "wer": 0.6,
+      "tts_time": 29.629,
+      "stt_time": 10.829,
+      "stt_ms": 10828.8,
+      "rtf": 1.8048,
+      "audio_duration_est": 6.0,
+      "is_cold": false
+    },
+    {
+      "sample_id": "rt004",
+      "reference": "Can you tell me about the Kohler Whitehaven farmhouse sink in cast iron thirty three inches",
+      "hypothesis": "the Kohler Whitehaven Farmhouse Sink in cast iron thirty three inches,",
+      "wer": 0.3125,
+      "tts_time": 24.703,
+      "stt_time": 5.838,
+      "stt_ms": 5837.8,
+      "rtf": 0.9122,
+      "audio_duration_est": 6.4,
+      "is_cold": false
+    },
+    {
+      "sample_id": "rt005",
+      "reference": "I want to schedule installation for luxury vinyl plank flooring in my kitchen about two hundred square feet",
+      "hypothesis": "",
+      "wer": 1.0,
+      "error": "Connection error."
+    },
+    {
+      "sample_id": "rt006",
+      "reference": "What is the difference between Valspar Signature and Sherwin Williams Duration for exterior paint",
+      "hypothesis": "",
+      "wer": 1.0,
+      "error": "Connection error."
+    },
+    {
+      "sample_id": "rt007",
+      "reference": "My LG front load washer model WM4500HBA is making a grinding noise during the spin cycle",
+      "hypothesis": "",
+      "wer": 1.0,
+      "error": "Connection error."
+    },
+    {
+      "sample_id": "rt008",
+      "reference": "I need twenty four inch pre hung interior doors in six panel colonial style do you have five in stock",
+      "hypothesis": "",
+      "wer": 1.0,
+      "error": "Connection error."
+    },
+    {
+      "sample_id": "rt009",
+      "reference": "Can I get a price match on the Milwaukee M18 FUEL circular saw I saw it at Home Depot for one ninety nine",
+      "hypothesis": "",
+      "wer": 1.0,
+      "error": "Connection error."
+    },
+    {
+      "sample_id": "rt010",
+      "reference": "I would like to rent a Ditch Witch trencher for the weekend to run irrigation lines in my backyard",
+      "hypothesis": "",
+      "wer": 1.0,
+      "error": "Connection error."
+    }
+  ],
+  "timestamp": "2026-05-11T16:24:36Z"
+}

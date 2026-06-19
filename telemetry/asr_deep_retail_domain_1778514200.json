@@ -1,0 +1,93 @@
+{
+  "provider": "deep",
+  "model_name": "Deepgram Nova-3",
+  "dataset_id": "retail_domain",
+  "dataset_name": "Retail Domain (Lowe's)",
+  "total_samples": 10,
+  "evaluated": 0,
+  "errors": 10,
+  "avg_wer": null,
+  "min_wer": null,
+  "max_wer": null,
+  "cold_start_ms": null,
+  "avg_warm_ms": null,
+  "avg_latency_ms": null,
+  "min_latency_ms": null,
+  "max_latency_ms": null,
+  "avg_rtf": null,
+  "min_rtf": null,
+  "max_rtf": null,
+  "results": [
+    {
+      "sample_id": "rt001",
+      "reference": "I need to check on order number seven eight four five two three for some power tools I ordered last week",
+      "hypothesis": "",
+      "wer": 1.0,
+      "error": "Attempted to use an http session outside of a job context. This is probably because you are trying to use a plugin without using the agent worker api. You may need to create your own aiohttp.ClientSession, pass it into the plugin constructor as a kwarg, and manage its lifecycle."
+    },
+    {
+      "sample_id": "rt002",
+      "reference": "Do you have the Samsung French Door refrigerator model RF28R7551SR in stainless steel",
+      "hypothesis": "",
+      "wer": 1.0,
+      "error": "Attempted to use an http session outside of a job context. This is probably because you are trying to use a plugin without using the agent worker api. You may need to create your own aiohttp.ClientSession, pass it into the plugin constructor as a kwarg, and manage its lifecycle."
+    },
+    {
+      "sample_id": "rt003",
+      "reference": "I am looking for a DeWalt twenty volt max cordless drill with the brushless motor",
+      "hypothesis": "",
+      "wer": 1.0,
+      "error": "Attempted to use an http session outside of a job context. This is probably because you are trying to use a plugin without using the agent worker api. You may need to create your own aiohttp.ClientSession, pass it into the plugin constructor as a kwarg, and manage its lifecycle."
+    },
+    {
+      "sample_id": "rt004",
+      "reference": "Can you tell me about the Kohler Whitehaven farmhouse sink in cast iron thirty three inches",
+      "hypothesis": "",
+      "wer": 1.0,
+      "error": "Attempted to use an http session outside of a job context. This is probably because you are trying to use a plugin without using the agent worker api. You may need to create your own aiohttp.ClientSession, pass it into the plugin constructor as a kwarg, and manage its lifecycle."
+    },
+    {
+      "sample_id": "rt005",
+      "reference": "I want to schedule installation for luxury vinyl plank flooring in my kitchen about two hundred square feet",
+      "hypothesis": "",
+      "wer": 1.0,
+      "error": "Attempted to use an http session outside of a job context. This is probably because you are trying to use a plugin without using the agent worker api. You may need to create your own aiohttp.ClientSession, pass it into the plugin constructor as a kwarg, and manage its lifecycle."
+    },
+    {
+      "sample_id": "rt006",
+      "reference": "What is the difference between Valspar Signature and Sherwin Williams Duration for exterior paint",
+      "hypothesis": "",
+      "wer": 1.0,
+      "error": "Attempted to use an http session outside of a job context. This is probably because you are trying to use a plugin without using the agent worker api. You may need to create your own aiohttp.ClientSession, pass it into the plugin constructor as a kwarg, and manage its lifecycle."
+    },
+    {
+      "sample_id": "rt007",
+      "reference": "My LG front load washer model WM4500HBA is making a grinding noise during the spin cycle",
+      "hypothesis": "",
+      "wer": 1.0,
+      "error": "Attempted to use an http session outside of a job context. This is probably because you are trying to use a plugin without using the agent worker api. You may need to create your own aiohttp.ClientSession, pass it into the plugin constructor as a kwarg, and manage its lifecycle."
+    },
+    {
+      "sample_id": "rt008",
+      "reference": "I need twenty four inch pre hung interior doors in six panel colonial style do you have five in stock",
+      "hypothesis": "",
+      "wer": 1.0,
+      "error": "Attempted to use an http session outside of a job context. This is probably because you are trying to use a plugin without using the agent worker api. You may need to create your own aiohttp.ClientSession, pass it into the plugin constructor as a kwarg, and manage its lifecycle."
+    },
+    {
+      "sample_id": "rt009",
+      "reference": "Can I get a price match on the Milwaukee M18 FUEL circular saw I saw it at Home Depot for one ninety nine",
+      "hypothesis": "",
+      "wer": 1.0,
+      "error": "Attempted to use an http session outside of a job context. This is probably because you are trying to use a plugin without using the agent worker api. You may need to create your own aiohttp.ClientSession, pass it into the plugin constructor as a kwarg, and manage its lifecycle."
+    },
+    {
+      "sample_id": "rt010",
+      "reference": "I would like to rent a Ditch Witch trencher for the weekend to run irrigation lines in my backyard",
+      "hypothesis": "",
+      "wer": 1.0,
+      "error": "Attempted to use an http session outside of a job context. This is probably because you are trying to use a plugin without using the agent worker api. You may need to create your own aiohttp.ClientSession, pass it into the plugin constructor as a kwarg, and manage its lifecycle."
+    }
+  ],
+  "timestamp": "2026-05-11T15:43:20Z"
+}

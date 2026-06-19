@@ -1,0 +1,42 @@
+Call ID: AD_y2pft4Vpaecz
+Date: 2026-04-27 16:06:45
+Caller: McAllister Construction, Co.
+Phone: +919845319358
+Disposition: Delivery Rescheduled
+Notes: 
+
+--- Summary ---
+The agent contacted Ranjith S to confirm his delivery appointment originally scheduled for next Tuesday at 3 PM. Ranjith requested to reschedule the delivery to Thursday at 2 PM, which the agent successfully arranged.
+
+--- Transcript ---
+  Agent: Hello Ranjith S, this is your scheduling assistant from the Lowe's Professional Delivery team. I'm calling to confirm the details of your upcoming delivery. May I take a moment to review the appointment with you?
+  Customer: Sure.
+  Customer: Sure.
+  Customer: Sure.
+  Agent: Thank you, Ranjith. Your delivery is scheduled for next Tuesday at 3 PM. Does this date and time still work for you?
+  Customer: Can we change it?
+  Customer: Can we change it?
+  Customer: Can we change it?
+  Customer: Can we change it?
+  Agent: I can help with that. Could you please tell me which date and time you would prefer for your delivery?
+  Customer: Probably on Thursday.
+  Customer: Probably on Thursday.
+  Customer: Probably on Thursday.
+  Customer: Probably on Thursday.
+  Agent: Thank you for letting me know. I will check the availability for delivery on Thursday for you. Just a moment, please.
+  Agent: On Thursday, we have delivery slots available at 1 PM, 2 PM, and 3 PM. Do any of these times work for you?
+  Customer: The
+  Customer: Probably two
+  Customer: Probably two PM.
+  Customer: Probably two PM.
+  Customer: Probably two PM.
+  Agent: Great! Just to confirm, you would like to reschedule your delivery to next Thursday at 2 PM. Should I go ahead and make this change for you?
+  Customer: Yes.
+  Customer: Yes.
+  Customer: Yes.
+  Customer: Yes.
+  Agent: Your delivery has been successfully rescheduled to next Thursday at 2 PM. Is there anything else I can assist you with today?
+  Customer: That's it. Thank you.
+  Customer: That's it. Thank you.
+  Customer: That's it. Thank you.
+  Customer: That's it. Thank you.

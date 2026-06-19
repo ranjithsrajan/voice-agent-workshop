@@ -1,0 +1,43 @@
+Call ID: AD_5yNTbAsqKTAF
+Date: 2026-04-29 15:19:04
+Caller: McAllister Construction, Co.
+Phone: +919739528001
+Disposition: Transferred to Human Agent
+Notes: 
+
+--- Summary ---
+The AI agent confirmed the customer's delivery scheduled for next Tuesday at 3pm. The customer requested to speak with a human agent and was transferred accordingly.
+
+--- Transcript ---
+  Customer: Hello.
+  Customer: Hello.
+  Customer: Hello.
+  Customer: Hello.
+  Agent: Hello, this is the Lowe's Professional Delivery scheduling assistant. Am I speaking with Ramanan? I would like to confirm your upcoming delivery details. Your delivery is scheduled for next Tuesday at 3pm. Is that correct?
+  Customer: Correct.
+  Customer: Correct.
+  Customer: Correct.
+  Agent: Great! Would you like me to confirm your delivery for next Tuesday at 3pm?
+  Customer: Yeah.
+  Customer: Yes, please.
+  Customer: Yes, please.
+  Customer: Yes, please.
+  Agent: Your delivery for next Tuesday at 3pm has been confirmed. Is there anything else I can assist you with regarding your delivery?
+  Customer: I want to talk
+  Customer: I want to talk to someone
+  Customer: I want to talk to someone. Can you
+  Customer: I want to talk to someone. Can you
+  Customer: I want to talk to someone. Can you
+  Customer: me to
+  Customer: me to an agent, please?
+  Customer: me to an agent, please?
+  Customer: me to an agent, please?
+  Agent: Certainly, I can transfer you to a human agent. Just to confirm, you would like to be connected to a human agent now?
+  Customer: Yes.
+  Customer: Yes.
+  Customer: Yes.
+  Agent: I am connecting you to a human agent now. Thank you for your patience. Have a great day!
+  Customer: You too.
+  Customer: You too.
+  Customer: You too.
+  Customer: You too.

@@ -1930,3 +1930,20 @@ host voiceagent-qtkqrjkj.livekit.cloud:443 ssl:True [SSLCertVerificationError:
 (1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed 
 certificate in certificate chain (_ssl.c:1032)')]
 
+    13:16:08.040 ERROR    livekit.agents     Error in _connection_task  
+Traceback (most recent call last):
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/livekit/agents/utils/log.py", 
+line 17, in async_fn_logs
+    return await fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/livekit/agents/worker.py", 
+line 1092, in _connection_task
+    raise RuntimeError(
+        f"failed to connect to livekit after {retry_count} attempts",
+    ) from None
+RuntimeError: failed to connect to livekit after 16 attempts
+

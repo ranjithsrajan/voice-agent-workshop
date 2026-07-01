@@ -161,7 +161,25 @@ class OutboundCaller(Agent):
 
 async def entrypoint(ctx: JobContext):
     logger.info(f"connecting to room {ctx.room.name}")
+
+    # Skip direct call rooms — those are handled by the human associate directly
+    # Check room name prefix first (most reliable, set before agent dispatch)
+    if ctx.room.name.startswith("direct-"):
+        logger.info(f"[{ctx.room.name}] direct call room detected (name prefix), agent exiting")
+        ctx.shutdown()
+        return
+
     await ctx.connect()
+
+    # Also check room metadata as backup
+    try:
+        room_meta = json.loads(ctx.room.metadata) if ctx.room.metadata else {}
+        if room_meta.get("direct_call"):
+            logger.info(f"[{ctx.room.name}] direct call room detected (metadata), agent exiting")
+            ctx.shutdown()
+            return
+    except (json.JSONDecodeError, TypeError):
+        pass
 
     # when dispatching the agent, we'll pass it the approriate info to dial the user
     # dial_info is a dict with the following keys:
@@ -256,10 +274,41 @@ async def entrypoint(ctx: JobContext):
         )
         ctx.shutdown()
         
+async def request_fnc(req):
+    """Reject jobs for direct call rooms so the agent never joins them."""
+    try:
+        room_name = req.room.name if req.room else ""
+        room_meta = req.room.metadata if req.room else ""
+        logger.info(f"[request_fnc] job received for room='{room_name}', agent='{req.agent_name}', meta='{room_meta}'")
+
+        # Reject if room name starts with "direct-"
+        if room_name.startswith("direct-"):
+            logger.info(f"[request_fnc] REJECTING job for direct call room: {room_name}")
+            await req.reject()
+            return
+
+        # Reject if room metadata marks it as a direct call
+        try:
+            meta = json.loads(room_meta) if room_meta else {}
+            if meta.get("direct_call"):
+                logger.info(f"[request_fnc] REJECTING job for direct call room (metadata): {room_name}")
+                await req.reject()
+                return
+        except (json.JSONDecodeError, TypeError):
+            pass
+
+        logger.info(f"[request_fnc] ACCEPTING job for room: {room_name}")
+        await req.accept()
+    except Exception as e:
+        logger.error(f"[request_fnc] ERROR: {e}", exc_info=True)
+        await req.reject()
+
+
 if __name__ == "__main__":
     cli.run_app(
         WorkerOptions(
             entrypoint_fnc=entrypoint,
+            request_fnc=request_fnc,
             agent_name="outbound-caller",
         )
     )

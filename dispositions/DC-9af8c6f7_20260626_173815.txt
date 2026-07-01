@@ -1,0 +1,31 @@
+Call ID: DC-9af8c6f7
+Date: 2026-06-26 17:38:15
+Call Type: Human Direct Call
+Caller: McAllister Construction, Co.
+Phone: +919845319358
+Disposition: Customer Callback Requested
+Notes: 
+
+--- Summary ---
+The Associate attempted to communicate with the Customer but faced audio issues, resulting in a fragmented conversation. The Customer inquired about the Associate's role and the services provided, with the Associate mentioning real-time resources and OpenAI.
+
+--- Transcript ---
+  Associate: Is it direct or
+  Associate: Oh,
+  Customer: No. The
+  Associate: No. Direct. Direct. Hello.
+  Customer: Another
+  Associate: Remove from speakers.
+  Associate: Hello? Can you hear me?
+  Customer: I can't hear you.
+  Associate: Yeah. See, that's how it is. So there's no agent in between
+  Associate: It's all human to human.
+  Customer: Okay.
+  Associate: What do you want to know?
+  Customer: I want to know why
+  Associate: See? That's a
+  Customer: What you do?
+  Associate: yeah. I have another agent. Someone show you.
+  Associate: So this will do real time in most of the resources there.
+  Associate: Model. Yeah. This is OpenAI.
+  Associate: OpenAI. Mhmm. Okay.

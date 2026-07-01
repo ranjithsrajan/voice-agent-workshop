@@ -1,0 +1,78 @@
+INFO:     Started server process [92467]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:61453 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61676 - "OPTIONS /api/direct-call HTTP/1.1" 200 OK
+INFO:ops-server:[direct-call] room created: direct-5803f126
+INFO:ops-server:[direct-call] SIP participant dialing +919845319358
+INFO:     127.0.0.1:61676 - "POST /api/direct-call HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61711 - "GET /api/call/DC-704b0ca2/transcript HTTP/1.1" 200 OK
+INFO:ops-server:[transcript-listener] connecting to room direct-5803f126 (direct=True)
+INFO:livekit:livekit_ffi::server:153:livekit_ffi::server - initializing ffi server v0.12.53
+INFO:livekit:livekit_ffi::cabi:50:livekit_ffi::cabi - initializing ffi server v0.12.53
+INFO:livekit:livekit_api::signal_client::signal_stream:103:livekit_api::signal_client::signal_stream - connecting to wss://voiceagent-qtkqrjkj.livekit.cloud/rtc?sdk=python&os=Mac+OS&os_version=26.4.1&device_model=Mac16%2C7&protocol=17&auto_subscribe=1&adaptive_stream=0&version=1.1.7
+INFO:ops-server:[transcript-listener] connected to room direct-5803f126, participants: ['+919845319358', 'ops-associate']
+INFO:ops-server:[direct-stt] subscribed to audio from +919845319358
+INFO:ops-server:[direct-stt] starting STT for Customer (+919845319358)
+INFO:ops-server:[direct-stt] subscribed to audio from ops-associate
+INFO:ops-server:[direct-stt] starting STT for Associate (ops-associate)
+INFO:     127.0.0.1:61728 - "GET /api/call/DC-704b0ca2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61728 - "GET /api/call/DC-704b0ca2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61728 - "GET /api/call/DC-704b0ca2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61728 - "GET /api/call/DC-704b0ca2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61728 - "GET /api/call/DC-704b0ca2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61728 - "GET /api/call/DC-704b0ca2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61728 - "GET /api/call/DC-704b0ca2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61728 - "GET /api/call/DC-704b0ca2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61728 - "GET /api/call/DC-704b0ca2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61728 - "GET /api/call/DC-704b0ca2 HTTP/1.1" 200 OK
+INFO:livekit:livekit::room:1620:livekit::room - disconnected from room with reason: RoomDeleted
+INFO:     127.0.0.1:61728 - "POST /api/call/DC-704b0ca2/end HTTP/1.1" 200 OK
+INFO:ops-server:[room] participant disconnected: ops-associate
+INFO:ops-server:[room] participant disconnected: +919845319358
+INFO:ops-server:[transcript-listener] disconnected from room direct-5803f126
+ERROR:livekit.plugins.deepgram:Error in send_task
+Traceback (most recent call last):
+  File "/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice-agent-workshop/venv/lib/python3.13/site-packages/livekit/agents/utils/log.py", line 17, in async_fn_logs
+    return await fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice-agent-workshop/venv/lib/python3.13/site-packages/livekit/plugins/deepgram/stt.py", line 529, in send_task
+    await ws.send_str(SpeechStream._CLOSE_MSG)
+  File "/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client_ws.py", line 245, in send_str
+    await self._writer.send_frame(
+        data.encode("utf-8"), WSMsgType.TEXT, compress=compress
+    )
+  File "/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/_websocket/writer.py", line 83, in send_frame
+    self._write_websocket_frame(message, opcode, 0)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/_websocket/writer.py", line 151, in _write_websocket_frame
+    raise ClientConnectionResetError("Cannot write to closing transport")
+aiohttp.client_exceptions.ClientConnectionResetError: Cannot write to closing transport
+ERROR:livekit.plugins.deepgram:Error in send_task
+Traceback (most recent call last):
+  File "/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice-agent-workshop/venv/lib/python3.13/site-packages/livekit/agents/utils/log.py", line 17, in async_fn_logs
+    return await fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice-agent-workshop/venv/lib/python3.13/site-packages/livekit/plugins/deepgram/stt.py", line 529, in send_task
+    await ws.send_str(SpeechStream._CLOSE_MSG)
+  File "/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client_ws.py", line 245, in send_str
+    await self._writer.send_frame(
+        data.encode("utf-8"), WSMsgType.TEXT, compress=compress
+    )
+  File "/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/_websocket/writer.py", line 83, in send_frame
+    self._write_websocket_frame(message, opcode, 0)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/_websocket/writer.py", line 151, in _write_websocket_frame
+    raise ClientConnectionResetError("Cannot write to closing transport")
+aiohttp.client_exceptions.ClientConnectionResetError: Cannot write to closing transport
+INFO:     127.0.0.1:61728 - "OPTIONS /api/call/DC-704b0ca2/summarize HTTP/1.1" 200 OK
+INFO:httpx:HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     127.0.0.1:61728 - "POST /api/call/DC-704b0ca2/summarize HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61885 - "OPTIONS /api/call/DC-704b0ca2/disposition HTTP/1.1" 200 OK
+INFO:ops-server:Saved disposition for DC-704b0ca2: No Contact
+INFO:ops-server:Disposition file saved: /Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice-agent-workshop/dispositions/DC-704b0ca2_20260701_130523.txt
+INFO:     127.0.0.1:61885 - "POST /api/call/DC-704b0ca2/disposition HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62689 - "GET /api/v1/contacts HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:62689 - "GET /api/v1/analytics/dashboard HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:62693 - "GET /api/v1/deals/pipeline HTTP/1.1" 404 Not Found

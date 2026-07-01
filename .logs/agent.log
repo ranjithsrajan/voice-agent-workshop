@@ -1,0 +1,1932 @@
+    13:03:39.636 DEBUG    asyncio            Using selector: KqueueSelector  
+    13:03:39.637 DEV      livekit.agents     Watching                           
+                                             /Users/rsundar/Library/CloudStor…  
+    13:03:40.832 DEBUG    asyncio            Using selector: KqueueSelector  
+    13:03:40.838 INFO     livekit.agents     starting worker  
+                                         {"version": "1.5.8", "rtc-version": 
+"1.1.7"}
+    13:03:40.839 INFO     livekit.agents     plugin registered  
+                                         {"plugin": "livekit.plugins.deepgram", 
+"version": "1.5.5"}
+                 INFO     livekit.agents     plugin registered  
+                                         {"plugin": "livekit.plugins.openai", 
+"version": "1.5.5"}
+    13:03:40.840 INFO     livekit.agents     plugin registered  
+                                         {"plugin": "livekit.plugins.cartesia", 
+"version": "1.5.5"}
+                 INFO     livekit.agents     plugin registered  
+                                         {"plugin": "livekit.plugins.silero", 
+"version": "1.5.5"}
+                 INFO     livekit.agents     plugin registered  
+                                         {"plugin": 
+"livekit.plugins.turn_detector.base", "version": "1.5.5"}
+                 INFO     livekit.agents     starting inference executor  
+    13:03:40.845 INFO     livekit.agents     initializing process  
+                                         {"pid": 92567, "inference": true}
+PyTorch was not found. Models won't be available and only tokenizers, configuration and file/data utilities can be used.
+    13:03:56.571 INFO     livekit.agents     process initialized  
+                                         {"pid": 92567, "inference": true, 
+"elapsed_time": 15.72}
+    13:03:56.622 INFO     livekit.agents     HTTP server listening on :61526  
+    13:03:56.637 WARNING  livekit.agents     failed to connect to livekit,      
+                                             retrying in 0s                     
+Traceback (most recent call last):
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1574, in _create_direct_connection
+    hosts = await self._resolve_host(host, port, traces=traces)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1190, in _resolve_host
+    return await asyncio.shield(resolved_host_task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1221, in _resolve_host_with_throttle
+    addrs = await self._resolver.resolve(host, port, family=self._family)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/resolver.py", line 40,
+in resolve
+    infos = await self._loop.getaddrinfo(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+    )
+    ^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/base_
+events.py", line 939, in getaddrinfo
+    return await self.run_in_executor(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        None, getaddr_func, host, port, family, type, proto, flags)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/concurrent/fu
+tures/thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/socket.py", 
+line 977, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 8] nodename nor servname provided, or not known
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/livekit/agents/worker.py", 
+line 1042, in _connection_task
+    ws = await self._http_session.ws_connect(
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 1087,
+in _ws_connect
+    resp = await self.request(
+           ^^^^^^^^^^^^^^^^^^^
+    ...<11 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 788, 
+in _request
+    resp = await handler(req)
+           ^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 742, 
+in _connect_and_send_request
+    conn = await self._connector.connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        req, traces=traces, timeout=real_timeout
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+672, in connect
+    proto = await self._create_connection(req, traces, timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1251, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1580, in _create_direct_connection
+    raise ClientConnectorDNSError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorDNSError: Cannot connect to host 
+voiceagent-qtkqrjkj.livekit.cloud:443 ssl:default [nodename nor servname 
+provided, or not known]
+
+    13:03:56.710 WARNING  livekit.agents     failed to connect to livekit,      
+                                             retrying in 2s                     
+Traceback (most recent call last):
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1574, in _create_direct_connection
+    hosts = await self._resolve_host(host, port, traces=traces)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1190, in _resolve_host
+    return await asyncio.shield(resolved_host_task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1221, in _resolve_host_with_throttle
+    addrs = await self._resolver.resolve(host, port, family=self._family)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/resolver.py", line 40,
+in resolve
+    infos = await self._loop.getaddrinfo(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+    )
+    ^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/base_
+events.py", line 939, in getaddrinfo
+    return await self.run_in_executor(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        None, getaddr_func, host, port, family, type, proto, flags)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/concurrent/fu
+tures/thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/socket.py", 
+line 977, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 8] nodename nor servname provided, or not known
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/livekit/agents/worker.py", 
+line 1042, in _connection_task
+    ws = await self._http_session.ws_connect(
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 1087,
+in _ws_connect
+    resp = await self.request(
+           ^^^^^^^^^^^^^^^^^^^
+    ...<11 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 788, 
+in _request
+    resp = await handler(req)
+           ^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 742, 
+in _connect_and_send_request
+    conn = await self._connector.connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        req, traces=traces, timeout=real_timeout
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+672, in connect
+    proto = await self._create_connection(req, traces, timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1251, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1580, in _create_direct_connection
+    raise ClientConnectorDNSError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorDNSError: Cannot connect to host 
+voiceagent-qtkqrjkj.livekit.cloud:443 ssl:default [nodename nor servname 
+provided, or not known]
+
+    13:03:59.438 INFO     livekit.agents     registered worker  
+                                         {"agent_name": "outbound-caller", "id":
+"AW_Cyu2pxCW9x72", "url": "wss://voiceagent-qtkqrjkj.livekit.cloud", "region": 
+"India West", "protocol": 17}
+    13:13:55.752 WARNING  livekit.agents     unexpected message type: 258  
+    13:13:55.767 WARNING  livekit.agents     failed to connect to livekit,      
+                                             retrying in 0s                     
+Traceback (most recent call last):
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/livekit/agents/worker.py", 
+line 1085, in _connection_task
+    await self._run_ws(ws)
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/livekit/agents/worker.py", 
+line 1167, in _run_ws
+    await asyncio.gather(*tasks)
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/livekit/agents/worker.py", 
+line 1139, in _recv_task
+    raise Exception("worker connection closed unexpectedly")
+Exception: worker connection closed unexpectedly
+
+    13:13:55.893 WARNING  livekit.agents     failed to connect to livekit,      
+                                             retrying in 2s                     
+Traceback (most recent call last):
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1325, in _wrap_create_connection
+    return await self._loop.create_connection(*args, **kwargs, sock=sock)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/base_
+events.py", line 1201, in create_connection
+    transport, protocol = await self._create_connection_transport(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        ssl_shutdown_timeout=ssl_shutdown_timeout)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/base_
+events.py", line 1234, in _create_connection_transport
+    await waiter
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/sslpr
+oto.py", line 581, in _on_handshake_complete
+    raise handshake_exc
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/sslpr
+oto.py", line 563, in _do_handshake
+    self._sslobj.do_handshake()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/ssl.py", line
+951, in do_handshake
+    self._sslobj.do_handshake()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate 
+verify failed: self-signed certificate in certificate chain (_ssl.c:1032)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/livekit/agents/worker.py", 
+line 1042, in _connection_task
+    ws = await self._http_session.ws_connect(
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 1087,
+in _ws_connect
+    resp = await self.request(
+           ^^^^^^^^^^^^^^^^^^^
+    ...<11 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 788, 
+in _request
+    resp = await handler(req)
+           ^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 742, 
+in _connect_and_send_request
+    conn = await self._connector.connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        req, traces=traces, timeout=real_timeout
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+672, in connect
+    proto = await self._create_connection(req, traces, timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1251, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1623, in _create_direct_connection
+    raise last_exc
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1592, in _create_direct_connection
+    transp, proto = await self._wrap_create_connection(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1327, in _wrap_create_connection
+    raise ClientConnectorCertificateError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorCertificateError: Cannot connect to 
+host voiceagent-qtkqrjkj.livekit.cloud:443 ssl:True [SSLCertVerificationError: 
+(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed 
+certificate in certificate chain (_ssl.c:1032)')]
+
+    13:13:58.132 WARNING  livekit.agents     failed to connect to livekit,      
+                                             retrying in 4s                     
+Traceback (most recent call last):
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1325, in _wrap_create_connection
+    return await self._loop.create_connection(*args, **kwargs, sock=sock)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/base_
+events.py", line 1201, in create_connection
+    transport, protocol = await self._create_connection_transport(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        ssl_shutdown_timeout=ssl_shutdown_timeout)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/base_
+events.py", line 1234, in _create_connection_transport
+    await waiter
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/sslpr
+oto.py", line 581, in _on_handshake_complete
+    raise handshake_exc
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/sslpr
+oto.py", line 563, in _do_handshake
+    self._sslobj.do_handshake()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/ssl.py", line
+951, in do_handshake
+    self._sslobj.do_handshake()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate 
+verify failed: self-signed certificate in certificate chain (_ssl.c:1032)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/livekit/agents/worker.py", 
+line 1042, in _connection_task
+    ws = await self._http_session.ws_connect(
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 1087,
+in _ws_connect
+    resp = await self.request(
+           ^^^^^^^^^^^^^^^^^^^
+    ...<11 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 788, 
+in _request
+    resp = await handler(req)
+           ^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 742, 
+in _connect_and_send_request
+    conn = await self._connector.connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        req, traces=traces, timeout=real_timeout
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+672, in connect
+    proto = await self._create_connection(req, traces, timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1251, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1623, in _create_direct_connection
+    raise last_exc
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1592, in _create_direct_connection
+    transp, proto = await self._wrap_create_connection(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1327, in _wrap_create_connection
+    raise ClientConnectorCertificateError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorCertificateError: Cannot connect to 
+host voiceagent-qtkqrjkj.livekit.cloud:443 ssl:True [SSLCertVerificationError: 
+(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed 
+certificate in certificate chain (_ssl.c:1032)')]
+
+    13:14:02.288 WARNING  livekit.agents     failed to connect to livekit,      
+                                             retrying in 6s                     
+Traceback (most recent call last):
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1325, in _wrap_create_connection
+    return await self._loop.create_connection(*args, **kwargs, sock=sock)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/base_
+events.py", line 1201, in create_connection
+    transport, protocol = await self._create_connection_transport(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        ssl_shutdown_timeout=ssl_shutdown_timeout)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/base_
+events.py", line 1234, in _create_connection_transport
+    await waiter
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/sslpr
+oto.py", line 581, in _on_handshake_complete
+    raise handshake_exc
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/sslpr
+oto.py", line 563, in _do_handshake
+    self._sslobj.do_handshake()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/ssl.py", line
+951, in do_handshake
+    self._sslobj.do_handshake()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate 
+verify failed: self-signed certificate in certificate chain (_ssl.c:1032)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/livekit/agents/worker.py", 
+line 1042, in _connection_task
+    ws = await self._http_session.ws_connect(
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 1087,
+in _ws_connect
+    resp = await self.request(
+           ^^^^^^^^^^^^^^^^^^^
+    ...<11 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 788, 
+in _request
+    resp = await handler(req)
+           ^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 742, 
+in _connect_and_send_request
+    conn = await self._connector.connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        req, traces=traces, timeout=real_timeout
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+672, in connect
+    proto = await self._create_connection(req, traces, timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1251, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1623, in _create_direct_connection
+    raise last_exc
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1592, in _create_direct_connection
+    transp, proto = await self._wrap_create_connection(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1327, in _wrap_create_connection
+    raise ClientConnectorCertificateError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorCertificateError: Cannot connect to 
+host voiceagent-qtkqrjkj.livekit.cloud:443 ssl:True [SSLCertVerificationError: 
+(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed 
+certificate in certificate chain (_ssl.c:1032)')]
+
+    13:14:08.433 WARNING  livekit.agents     failed to connect to livekit,      
+                                             retrying in 8s                     
+Traceback (most recent call last):
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1325, in _wrap_create_connection
+    return await self._loop.create_connection(*args, **kwargs, sock=sock)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/base_
+events.py", line 1201, in create_connection
+    transport, protocol = await self._create_connection_transport(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        ssl_shutdown_timeout=ssl_shutdown_timeout)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/base_
+events.py", line 1234, in _create_connection_transport
+    await waiter
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/sslpr
+oto.py", line 581, in _on_handshake_complete
+    raise handshake_exc
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/sslpr
+oto.py", line 563, in _do_handshake
+    self._sslobj.do_handshake()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/ssl.py", line
+951, in do_handshake
+    self._sslobj.do_handshake()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate 
+verify failed: self-signed certificate in certificate chain (_ssl.c:1032)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/livekit/agents/worker.py", 
+line 1042, in _connection_task
+    ws = await self._http_session.ws_connect(
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 1087,
+in _ws_connect
+    resp = await self.request(
+           ^^^^^^^^^^^^^^^^^^^
+    ...<11 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 788, 
+in _request
+    resp = await handler(req)
+           ^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 742, 
+in _connect_and_send_request
+    conn = await self._connector.connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        req, traces=traces, timeout=real_timeout
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+672, in connect
+    proto = await self._create_connection(req, traces, timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1251, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1623, in _create_direct_connection
+    raise last_exc
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1592, in _create_direct_connection
+    transp, proto = await self._wrap_create_connection(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1327, in _wrap_create_connection
+    raise ClientConnectorCertificateError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorCertificateError: Cannot connect to 
+host voiceagent-qtkqrjkj.livekit.cloud:443 ssl:True [SSLCertVerificationError: 
+(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed 
+certificate in certificate chain (_ssl.c:1032)')]
+
+    13:14:16.566 WARNING  livekit.agents     failed to connect to livekit,      
+                                             retrying in 10s                    
+Traceback (most recent call last):
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1325, in _wrap_create_connection
+    return await self._loop.create_connection(*args, **kwargs, sock=sock)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/base_
+events.py", line 1201, in create_connection
+    transport, protocol = await self._create_connection_transport(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        ssl_shutdown_timeout=ssl_shutdown_timeout)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/base_
+events.py", line 1234, in _create_connection_transport
+    await waiter
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/sslpr
+oto.py", line 581, in _on_handshake_complete
+    raise handshake_exc
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/sslpr
+oto.py", line 563, in _do_handshake
+    self._sslobj.do_handshake()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/ssl.py", line
+951, in do_handshake
+    self._sslobj.do_handshake()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate 
+verify failed: self-signed certificate in certificate chain (_ssl.c:1032)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/livekit/agents/worker.py", 
+line 1042, in _connection_task
+    ws = await self._http_session.ws_connect(
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 1087,
+in _ws_connect
+    resp = await self.request(
+           ^^^^^^^^^^^^^^^^^^^
+    ...<11 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 788, 
+in _request
+    resp = await handler(req)
+           ^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 742, 
+in _connect_and_send_request
+    conn = await self._connector.connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        req, traces=traces, timeout=real_timeout
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+672, in connect
+    proto = await self._create_connection(req, traces, timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1251, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1623, in _create_direct_connection
+    raise last_exc
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1592, in _create_direct_connection
+    transp, proto = await self._wrap_create_connection(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1327, in _wrap_create_connection
+    raise ClientConnectorCertificateError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorCertificateError: Cannot connect to 
+host voiceagent-qtkqrjkj.livekit.cloud:443 ssl:True [SSLCertVerificationError: 
+(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed 
+certificate in certificate chain (_ssl.c:1032)')]
+
+    13:14:26.693 WARNING  livekit.agents     failed to connect to livekit,      
+                                             retrying in 10s                    
+Traceback (most recent call last):
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1325, in _wrap_create_connection
+    return await self._loop.create_connection(*args, **kwargs, sock=sock)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/base_
+events.py", line 1201, in create_connection
+    transport, protocol = await self._create_connection_transport(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        ssl_shutdown_timeout=ssl_shutdown_timeout)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/base_
+events.py", line 1234, in _create_connection_transport
+    await waiter
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/sslpr
+oto.py", line 581, in _on_handshake_complete
+    raise handshake_exc
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/sslpr
+oto.py", line 563, in _do_handshake
+    self._sslobj.do_handshake()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/ssl.py", line
+951, in do_handshake
+    self._sslobj.do_handshake()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate 
+verify failed: self-signed certificate in certificate chain (_ssl.c:1032)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/livekit/agents/worker.py", 
+line 1042, in _connection_task
+    ws = await self._http_session.ws_connect(
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 1087,
+in _ws_connect
+    resp = await self.request(
+           ^^^^^^^^^^^^^^^^^^^
+    ...<11 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 788, 
+in _request
+    resp = await handler(req)
+           ^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 742, 
+in _connect_and_send_request
+    conn = await self._connector.connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        req, traces=traces, timeout=real_timeout
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+672, in connect
+    proto = await self._create_connection(req, traces, timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1251, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1623, in _create_direct_connection
+    raise last_exc
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1592, in _create_direct_connection
+    transp, proto = await self._wrap_create_connection(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1327, in _wrap_create_connection
+    raise ClientConnectorCertificateError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorCertificateError: Cannot connect to 
+host voiceagent-qtkqrjkj.livekit.cloud:443 ssl:True [SSLCertVerificationError: 
+(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed 
+certificate in certificate chain (_ssl.c:1032)')]
+
+    13:14:36.800 WARNING  livekit.agents     failed to connect to livekit,      
+                                             retrying in 10s                    
+Traceback (most recent call last):
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1325, in _wrap_create_connection
+    return await self._loop.create_connection(*args, **kwargs, sock=sock)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/base_
+events.py", line 1201, in create_connection
+    transport, protocol = await self._create_connection_transport(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        ssl_shutdown_timeout=ssl_shutdown_timeout)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/base_
+events.py", line 1234, in _create_connection_transport
+    await waiter
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/sslpr
+oto.py", line 581, in _on_handshake_complete
+    raise handshake_exc
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/sslpr
+oto.py", line 563, in _do_handshake
+    self._sslobj.do_handshake()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/ssl.py", line
+951, in do_handshake
+    self._sslobj.do_handshake()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate 
+verify failed: self-signed certificate in certificate chain (_ssl.c:1032)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/livekit/agents/worker.py", 
+line 1042, in _connection_task
+    ws = await self._http_session.ws_connect(
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 1087,
+in _ws_connect
+    resp = await self.request(
+           ^^^^^^^^^^^^^^^^^^^
+    ...<11 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 788, 
+in _request
+    resp = await handler(req)
+           ^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 742, 
+in _connect_and_send_request
+    conn = await self._connector.connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        req, traces=traces, timeout=real_timeout
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+672, in connect
+    proto = await self._create_connection(req, traces, timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1251, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1623, in _create_direct_connection
+    raise last_exc
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1592, in _create_direct_connection
+    transp, proto = await self._wrap_create_connection(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1327, in _wrap_create_connection
+    raise ClientConnectorCertificateError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorCertificateError: Cannot connect to 
+host voiceagent-qtkqrjkj.livekit.cloud:443 ssl:True [SSLCertVerificationError: 
+(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed 
+certificate in certificate chain (_ssl.c:1032)')]
+
+    13:14:46.944 WARNING  livekit.agents     failed to connect to livekit,      
+                                             retrying in 10s                    
+Traceback (most recent call last):
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1325, in _wrap_create_connection
+    return await self._loop.create_connection(*args, **kwargs, sock=sock)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/base_
+events.py", line 1201, in create_connection
+    transport, protocol = await self._create_connection_transport(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        ssl_shutdown_timeout=ssl_shutdown_timeout)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/base_
+events.py", line 1234, in _create_connection_transport
+    await waiter
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/sslpr
+oto.py", line 581, in _on_handshake_complete
+    raise handshake_exc
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/sslpr
+oto.py", line 563, in _do_handshake
+    self._sslobj.do_handshake()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/ssl.py", line
+951, in do_handshake
+    self._sslobj.do_handshake()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate 
+verify failed: self-signed certificate in certificate chain (_ssl.c:1032)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/livekit/agents/worker.py", 
+line 1042, in _connection_task
+    ws = await self._http_session.ws_connect(
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 1087,
+in _ws_connect
+    resp = await self.request(
+           ^^^^^^^^^^^^^^^^^^^
+    ...<11 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 788, 
+in _request
+    resp = await handler(req)
+           ^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 742, 
+in _connect_and_send_request
+    conn = await self._connector.connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        req, traces=traces, timeout=real_timeout
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+672, in connect
+    proto = await self._create_connection(req, traces, timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1251, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1623, in _create_direct_connection
+    raise last_exc
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1592, in _create_direct_connection
+    transp, proto = await self._wrap_create_connection(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1327, in _wrap_create_connection
+    raise ClientConnectorCertificateError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorCertificateError: Cannot connect to 
+host voiceagent-qtkqrjkj.livekit.cloud:443 ssl:True [SSLCertVerificationError: 
+(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed 
+certificate in certificate chain (_ssl.c:1032)')]
+
+    13:14:57.050 WARNING  livekit.agents     failed to connect to livekit,      
+                                             retrying in 10s                    
+Traceback (most recent call last):
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1325, in _wrap_create_connection
+    return await self._loop.create_connection(*args, **kwargs, sock=sock)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/base_
+events.py", line 1201, in create_connection
+    transport, protocol = await self._create_connection_transport(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        ssl_shutdown_timeout=ssl_shutdown_timeout)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/base_
+events.py", line 1234, in _create_connection_transport
+    await waiter
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/sslpr
+oto.py", line 581, in _on_handshake_complete
+    raise handshake_exc
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/sslpr
+oto.py", line 563, in _do_handshake
+    self._sslobj.do_handshake()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/ssl.py", line
+951, in do_handshake
+    self._sslobj.do_handshake()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate 
+verify failed: self-signed certificate in certificate chain (_ssl.c:1032)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/livekit/agents/worker.py", 
+line 1042, in _connection_task
+    ws = await self._http_session.ws_connect(
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 1087,
+in _ws_connect
+    resp = await self.request(
+           ^^^^^^^^^^^^^^^^^^^
+    ...<11 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 788, 
+in _request
+    resp = await handler(req)
+           ^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 742, 
+in _connect_and_send_request
+    conn = await self._connector.connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        req, traces=traces, timeout=real_timeout
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+672, in connect
+    proto = await self._create_connection(req, traces, timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1251, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1623, in _create_direct_connection
+    raise last_exc
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1592, in _create_direct_connection
+    transp, proto = await self._wrap_create_connection(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1327, in _wrap_create_connection
+    raise ClientConnectorCertificateError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorCertificateError: Cannot connect to 
+host voiceagent-qtkqrjkj.livekit.cloud:443 ssl:True [SSLCertVerificationError: 
+(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed 
+certificate in certificate chain (_ssl.c:1032)')]
+
+    13:15:07.202 WARNING  livekit.agents     failed to connect to livekit,      
+                                             retrying in 10s                    
+Traceback (most recent call last):
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1325, in _wrap_create_connection
+    return await self._loop.create_connection(*args, **kwargs, sock=sock)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/base_
+events.py", line 1201, in create_connection
+    transport, protocol = await self._create_connection_transport(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        ssl_shutdown_timeout=ssl_shutdown_timeout)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/base_
+events.py", line 1234, in _create_connection_transport
+    await waiter
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/sslpr
+oto.py", line 581, in _on_handshake_complete
+    raise handshake_exc
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/sslpr
+oto.py", line 563, in _do_handshake
+    self._sslobj.do_handshake()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/ssl.py", line
+951, in do_handshake
+    self._sslobj.do_handshake()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate 
+verify failed: self-signed certificate in certificate chain (_ssl.c:1032)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/livekit/agents/worker.py", 
+line 1042, in _connection_task
+    ws = await self._http_session.ws_connect(
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 1087,
+in _ws_connect
+    resp = await self.request(
+           ^^^^^^^^^^^^^^^^^^^
+    ...<11 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 788, 
+in _request
+    resp = await handler(req)
+           ^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 742, 
+in _connect_and_send_request
+    conn = await self._connector.connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        req, traces=traces, timeout=real_timeout
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+672, in connect
+    proto = await self._create_connection(req, traces, timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1251, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1623, in _create_direct_connection
+    raise last_exc
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1592, in _create_direct_connection
+    transp, proto = await self._wrap_create_connection(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1327, in _wrap_create_connection
+    raise ClientConnectorCertificateError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorCertificateError: Cannot connect to 
+host voiceagent-qtkqrjkj.livekit.cloud:443 ssl:True [SSLCertVerificationError: 
+(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed 
+certificate in certificate chain (_ssl.c:1032)')]
+
+    13:15:17.361 WARNING  livekit.agents     failed to connect to livekit,      
+                                             retrying in 10s                    
+Traceback (most recent call last):
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1325, in _wrap_create_connection
+    return await self._loop.create_connection(*args, **kwargs, sock=sock)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/base_
+events.py", line 1201, in create_connection
+    transport, protocol = await self._create_connection_transport(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        ssl_shutdown_timeout=ssl_shutdown_timeout)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/base_
+events.py", line 1234, in _create_connection_transport
+    await waiter
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/sslpr
+oto.py", line 581, in _on_handshake_complete
+    raise handshake_exc
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/sslpr
+oto.py", line 563, in _do_handshake
+    self._sslobj.do_handshake()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/ssl.py", line
+951, in do_handshake
+    self._sslobj.do_handshake()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate 
+verify failed: self-signed certificate in certificate chain (_ssl.c:1032)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/livekit/agents/worker.py", 
+line 1042, in _connection_task
+    ws = await self._http_session.ws_connect(
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 1087,
+in _ws_connect
+    resp = await self.request(
+           ^^^^^^^^^^^^^^^^^^^
+    ...<11 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 788, 
+in _request
+    resp = await handler(req)
+           ^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 742, 
+in _connect_and_send_request
+    conn = await self._connector.connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        req, traces=traces, timeout=real_timeout
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+672, in connect
+    proto = await self._create_connection(req, traces, timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1251, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1623, in _create_direct_connection
+    raise last_exc
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1592, in _create_direct_connection
+    transp, proto = await self._wrap_create_connection(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1327, in _wrap_create_connection
+    raise ClientConnectorCertificateError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorCertificateError: Cannot connect to 
+host voiceagent-qtkqrjkj.livekit.cloud:443 ssl:True [SSLCertVerificationError: 
+(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed 
+certificate in certificate chain (_ssl.c:1032)')]
+
+    13:15:27.492 WARNING  livekit.agents     failed to connect to livekit,      
+                                             retrying in 10s                    
+Traceback (most recent call last):
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1325, in _wrap_create_connection
+    return await self._loop.create_connection(*args, **kwargs, sock=sock)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/base_
+events.py", line 1201, in create_connection
+    transport, protocol = await self._create_connection_transport(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        ssl_shutdown_timeout=ssl_shutdown_timeout)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/base_
+events.py", line 1234, in _create_connection_transport
+    await waiter
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/sslpr
+oto.py", line 581, in _on_handshake_complete
+    raise handshake_exc
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/sslpr
+oto.py", line 563, in _do_handshake
+    self._sslobj.do_handshake()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/ssl.py", line
+951, in do_handshake
+    self._sslobj.do_handshake()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate 
+verify failed: self-signed certificate in certificate chain (_ssl.c:1032)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/livekit/agents/worker.py", 
+line 1042, in _connection_task
+    ws = await self._http_session.ws_connect(
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 1087,
+in _ws_connect
+    resp = await self.request(
+           ^^^^^^^^^^^^^^^^^^^
+    ...<11 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 788, 
+in _request
+    resp = await handler(req)
+           ^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 742, 
+in _connect_and_send_request
+    conn = await self._connector.connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        req, traces=traces, timeout=real_timeout
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+672, in connect
+    proto = await self._create_connection(req, traces, timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1251, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1623, in _create_direct_connection
+    raise last_exc
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1592, in _create_direct_connection
+    transp, proto = await self._wrap_create_connection(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1327, in _wrap_create_connection
+    raise ClientConnectorCertificateError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorCertificateError: Cannot connect to 
+host voiceagent-qtkqrjkj.livekit.cloud:443 ssl:True [SSLCertVerificationError: 
+(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed 
+certificate in certificate chain (_ssl.c:1032)')]
+
+    13:15:37.615 WARNING  livekit.agents     failed to connect to livekit,      
+                                             retrying in 10s                    
+Traceback (most recent call last):
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1325, in _wrap_create_connection
+    return await self._loop.create_connection(*args, **kwargs, sock=sock)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/base_
+events.py", line 1201, in create_connection
+    transport, protocol = await self._create_connection_transport(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        ssl_shutdown_timeout=ssl_shutdown_timeout)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/base_
+events.py", line 1234, in _create_connection_transport
+    await waiter
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/sslpr
+oto.py", line 581, in _on_handshake_complete
+    raise handshake_exc
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/sslpr
+oto.py", line 563, in _do_handshake
+    self._sslobj.do_handshake()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/ssl.py", line
+951, in do_handshake
+    self._sslobj.do_handshake()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate 
+verify failed: self-signed certificate in certificate chain (_ssl.c:1032)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/livekit/agents/worker.py", 
+line 1042, in _connection_task
+    ws = await self._http_session.ws_connect(
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 1087,
+in _ws_connect
+    resp = await self.request(
+           ^^^^^^^^^^^^^^^^^^^
+    ...<11 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 788, 
+in _request
+    resp = await handler(req)
+           ^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 742, 
+in _connect_and_send_request
+    conn = await self._connector.connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        req, traces=traces, timeout=real_timeout
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+672, in connect
+    proto = await self._create_connection(req, traces, timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1251, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1623, in _create_direct_connection
+    raise last_exc
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1592, in _create_direct_connection
+    transp, proto = await self._wrap_create_connection(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1327, in _wrap_create_connection
+    raise ClientConnectorCertificateError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorCertificateError: Cannot connect to 
+host voiceagent-qtkqrjkj.livekit.cloud:443 ssl:True [SSLCertVerificationError: 
+(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed 
+certificate in certificate chain (_ssl.c:1032)')]
+
+    13:15:47.749 WARNING  livekit.agents     failed to connect to livekit,      
+                                             retrying in 10s                    
+Traceback (most recent call last):
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1325, in _wrap_create_connection
+    return await self._loop.create_connection(*args, **kwargs, sock=sock)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/base_
+events.py", line 1201, in create_connection
+    transport, protocol = await self._create_connection_transport(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        ssl_shutdown_timeout=ssl_shutdown_timeout)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/base_
+events.py", line 1234, in _create_connection_transport
+    await waiter
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/sslpr
+oto.py", line 581, in _on_handshake_complete
+    raise handshake_exc
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/sslpr
+oto.py", line 563, in _do_handshake
+    self._sslobj.do_handshake()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/ssl.py", line
+951, in do_handshake
+    self._sslobj.do_handshake()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate 
+verify failed: self-signed certificate in certificate chain (_ssl.c:1032)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/livekit/agents/worker.py", 
+line 1042, in _connection_task
+    ws = await self._http_session.ws_connect(
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 1087,
+in _ws_connect
+    resp = await self.request(
+           ^^^^^^^^^^^^^^^^^^^
+    ...<11 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 788, 
+in _request
+    resp = await handler(req)
+           ^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 742, 
+in _connect_and_send_request
+    conn = await self._connector.connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        req, traces=traces, timeout=real_timeout
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+672, in connect
+    proto = await self._create_connection(req, traces, timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1251, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1623, in _create_direct_connection
+    raise last_exc
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1592, in _create_direct_connection
+    transp, proto = await self._wrap_create_connection(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1327, in _wrap_create_connection
+    raise ClientConnectorCertificateError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorCertificateError: Cannot connect to 
+host voiceagent-qtkqrjkj.livekit.cloud:443 ssl:True [SSLCertVerificationError: 
+(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed 
+certificate in certificate chain (_ssl.c:1032)')]
+
+    13:15:57.910 WARNING  livekit.agents     failed to connect to livekit,      
+                                             retrying in 10s                    
+Traceback (most recent call last):
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1325, in _wrap_create_connection
+    return await self._loop.create_connection(*args, **kwargs, sock=sock)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/base_
+events.py", line 1201, in create_connection
+    transport, protocol = await self._create_connection_transport(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        ssl_shutdown_timeout=ssl_shutdown_timeout)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/base_
+events.py", line 1234, in _create_connection_transport
+    await waiter
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/sslpr
+oto.py", line 581, in _on_handshake_complete
+    raise handshake_exc
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/asyncio/sslpr
+oto.py", line 563, in _do_handshake
+    self._sslobj.do_handshake()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File 
+"/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/ssl.py", line
+951, in do_handshake
+    self._sslobj.do_handshake()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate 
+verify failed: self-signed certificate in certificate chain (_ssl.c:1032)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/livekit/agents/worker.py", 
+line 1042, in _connection_task
+    ws = await self._http_session.ws_connect(
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 1087,
+in _ws_connect
+    resp = await self.request(
+           ^^^^^^^^^^^^^^^^^^^
+    ...<11 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 788, 
+in _request
+    resp = await handler(req)
+           ^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/client.py", line 742, 
+in _connect_and_send_request
+    conn = await self._connector.connect(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        req, traces=traces, timeout=real_timeout
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+672, in connect
+    proto = await self._create_connection(req, traces, timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1251, in _create_connection
+    _, proto = await self._create_direct_connection(req, traces, timeout)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1623, in _create_direct_connection
+    raise last_exc
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1592, in _create_direct_connection
+    transp, proto = await self._wrap_create_connection(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<7 lines>...
+    )
+    ^
+  File 
+"/Users/rsundar/Library/CloudStorage/OneDrive-Lowe'sCompaniesInc/WorkSpace/voice
+-agent-workshop/venv/lib/python3.13/site-packages/aiohttp/connector.py", line 
+1327, in _wrap_create_connection
+    raise ClientConnectorCertificateError(req.connection_key, exc) from exc
+aiohttp.client_exceptions.ClientConnectorCertificateError: Cannot connect to 
+host voiceagent-qtkqrjkj.livekit.cloud:443 ssl:True [SSLCertVerificationError: 
+(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed 
+certificate in certificate chain (_ssl.c:1032)')]
+

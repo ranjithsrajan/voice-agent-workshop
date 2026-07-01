@@ -1,0 +1,1 @@
+{"run_id": "nemo_20260626T052846Z", "provider": "nemo", "metric_type": "usage_summary", "timestamp": 1782451732.699334, "iso_time": "2026-06-26T05:28:52.699336+00:00", "llm_prompt_tokens": 0, "llm_completion_tokens": 0, "tts_characters_count": 0, "session_duration": 5.83, "turn_count": 0, "interruption_count": 0, "stt_transcript_count": 0}

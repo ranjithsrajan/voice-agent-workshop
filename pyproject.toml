@@ -8,6 +8,7 @@ dependencies = [
     "fastapi>=0.115.0",
     "httpx>=0.28.1",
     "livekit-agents[deepgram,mcp,nvidia,openai,silero,turn-detector]>=1.2.15",
+    "livekit-plugins-cartesia>=1.5.4",
     "livekit-plugins-noise-cancellation~=0.2",
     "python-dotenv>=1.1.1",
     "uvicorn>=0.34.0",

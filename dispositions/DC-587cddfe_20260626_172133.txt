@@ -1,0 +1,30 @@
+Call ID: DC-587cddfe
+Date: 2026-06-26 17:21:33
+Call Type: Human Direct Call
+Caller: McAllister Construction, Co.
+Phone: +919845319358
+Disposition: Customer Callback Requested
+Notes: 
+
+--- Summary ---
+The customer contacted the associate to inquire about the return policy for a recently purchased LG refrigerator. The associate asked for details such as the model number to assist with the return process. The conversation was in the initial stages of gathering information.
+
+--- Transcript ---
+  Customer: Hello.
+  Associate: Hey. Is this Santel?
+  Associate: Hey.
+  Customer: Hey.
+  Customer: How are you?
+  Associate: Hi.
+  Associate: I'm good.
+  Associate: What are you looking for?
+  Customer: I'm looking forward to return my refrigerator.
+  Associate: Okay.
+  Associate: Can I help?
+  Customer: Okay. So I need to know about the return policy for my refrigerator.
+  Customer: I purchased that one in last week.
+  Associate: Okay. Do you know the model number or something?
+  Customer: I
+  Customer: don't exactly remember the model number, but it is kind of an LG
+  Customer: refrigerator. It is around two hundred liters capacity.
+  Associate: Okay. No problem. I can help you with that.

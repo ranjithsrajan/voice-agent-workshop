@@ -6,6 +6,7 @@ import time
 import asyncio
 import logging
 import certifi
+from pathlib import Path
 
 os.environ["SSL_CERT_FILE"] = certifi.where()
 
@@ -16,7 +17,8 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 from livekit import rtc, api
 
-load_dotenv("../.env.local")
+_PROJECT_ROOT = Path(__file__).resolve().parent.parent
+load_dotenv(_PROJECT_ROOT / ".env.local")
 
 logger = logging.getLogger("ops-server")
 logging.basicConfig(level=logging.INFO)
@@ -41,6 +43,7 @@ class CallRequest(BaseModel):
     phone_number: str
     transfer_to: str = ""
     caller_name: str = ""
+    direct_call: bool = False
 
 
 def _generate_listener_token(room_name: str, identity: str) -> str:
@@ -56,6 +59,23 @@ def _generate_listener_token(room_name: str, identity: str) -> str:
         ))
     )
     return token.to_jwt()
+
+
+def _generate_participant_token(room_name: str, identity: str, name: str = "Associate") -> str:
+    """Token that allows the associate to publish mic audio and subscribe to remote tracks."""
+    token = (
+        api.AccessToken(LIVEKIT_API_KEY, LIVEKIT_API_SECRET)
+        .with_identity(identity)
+        .with_name(name)
+        .with_grants(api.VideoGrants(
+            room_join=True,
+            room=room_name,
+            can_subscribe=True,
+            can_publish=True,
+        ))
+    )
+    return token.to_jwt()
+
 
 
 @app.post("/api/call")
@@ -105,6 +125,7 @@ async def initiate_call(req: CallRequest):
             "status": "ringing",
             "started_at": time.time(),
             "transcripts": [],
+            "direct_call": False,
         }
 
         return {
@@ -164,12 +185,16 @@ async def stream_transcript(call_id: str):
 
         transcript_queue: asyncio.Queue = asyncio.Queue()
 
+        is_direct = call.get("direct_call", False)
+
         def _identity_to_speaker(identity: str) -> str:
             if not identity or identity == "ops-listener":
-                return "Agent"
+                return "Agent" if not is_direct else "Associate"
+            if identity == "ops-associate":
+                return "Associate"
             if identity.startswith("+") or identity.replace("-", "").isdigit():
                 return "Customer"
-            return "Agent"
+            return "Agent" if not is_direct else "Associate"
 
         # Text stream handler for topic "lk.transcription" (new LiveKit agents SDK)
         def on_text_stream(reader, participant_identity: str):
@@ -219,6 +244,82 @@ async def stream_transcript(call_id: str):
         # Register text stream handler BEFORE connecting
         room.register_text_stream_handler(TOPIC_TRANSCRIPTION, on_text_stream)
 
+        # --- Server-side STT for direct calls ---
+        stt_seg_counter = [0]
+
+        async def _run_stt_for_track(track: rtc.RemoteAudioTrack, participant_identity: str):
+            """Subscribe to an audio track and run Deepgram STT, pushing results to transcript_queue."""
+            import aiohttp
+            from livekit.plugins.deepgram import STT as DeepgramSTT
+            from livekit.agents.stt import SpeechEventType
+
+            speaker = _identity_to_speaker(participant_identity)
+            logger.info(f"[direct-stt] starting STT for {speaker} ({participant_identity})")
+
+            http_session = aiohttp.ClientSession()
+            try:
+                stt = DeepgramSTT(http_session=http_session)
+                stt_stream = stt.stream()
+
+                audio_stream = rtc.AudioStream(track)
+
+                async def _feed_audio():
+                    try:
+                        async for frame_event in audio_stream:
+                            stt_stream.push_frame(frame_event.frame)
+                    except Exception as e:
+                        logger.error(f"[direct-stt] audio feed error for {speaker}: {e}")
+                    finally:
+                        await stt_stream.aclose()
+
+                feed_task = asyncio.create_task(_feed_audio())
+                background_tasks.append(feed_task)
+
+                current_seg = [None]  # track current utterance segment id
+
+                async for stt_event in stt_stream:
+                    if stt_event.type in (SpeechEventType.INTERIM_TRANSCRIPT, SpeechEventType.FINAL_TRANSCRIPT):
+                        text = stt_event.alternatives[0].text if stt_event.alternatives else ""
+                        if not text.strip():
+                            continue
+                        is_final = stt_event.type == SpeechEventType.FINAL_TRANSCRIPT
+
+                        # Assign a stable segment id per utterance
+                        if current_seg[0] is None:
+                            stt_seg_counter[0] += 1
+                            current_seg[0] = f"direct_seg_{stt_seg_counter[0]}"
+
+                        transcript_queue.put_nowait({
+                            "event": "transcription",
+                            "speaker": speaker,
+                            "text": text,
+                            "is_final": is_final,
+                            "segment_id": current_seg[0],
+                            "time": time.strftime("%M:%S"),
+                        })
+
+                        # Reset segment id after final so next utterance gets a new one
+                        if is_final:
+                            current_seg[0] = None
+            except Exception as e:
+                logger.error(f"[direct-stt] STT error for {speaker}: {e}", exc_info=True)
+            finally:
+                await http_session.close()
+
+        @room.on("track_subscribed")
+        def on_track_subscribed(track, publication, participant):
+            if not is_direct:
+                return
+            if track.kind != rtc.TrackKind.KIND_AUDIO:
+                return
+            if participant.identity == "ops-listener":
+                return
+            logger.info(f"[direct-stt] subscribed to audio from {participant.identity}")
+            task = asyncio.get_event_loop().create_task(
+                _run_stt_for_track(track, participant.identity)
+            )
+            background_tasks.append(task)
+
         @room.on("participant_connected")
         def on_participant_connected(participant):
             logger.info(f"[room] participant connected: {participant.identity}")
@@ -236,8 +337,12 @@ async def stream_transcript(call_id: str):
             })
 
         try:
-            token = _generate_listener_token(room_name, "ops-listener")
-            logger.info(f"[transcript-listener] connecting to room {room_name}")
+            # For direct calls, use a token that can subscribe to audio tracks
+            if is_direct:
+                token = _generate_participant_token(room_name, "ops-listener", "OpsUI Listener")
+            else:
+                token = _generate_listener_token(room_name, "ops-listener")
+            logger.info(f"[transcript-listener] connecting to room {room_name} (direct={is_direct})")
             await room.connect(LIVEKIT_URL, token)
             connected = True
             logger.info(f"[transcript-listener] connected to room {room_name}, "
@@ -260,7 +365,9 @@ async def stream_transcript(call_id: str):
 
                     if entry.get("event") == "participant_disconnected":
                         remaining = room.remote_participants
-                        if len(remaining) <= 1:
+                        real_participants = [p for p in remaining.values()
+                                             if p.identity != "ops-listener"]
+                        if len(real_participants) <= 1:
                             call["status"] = "ended"
                             yield f"data: {json.dumps({'event': 'call_ended'})}\n\n"
                             break
@@ -294,6 +401,7 @@ async def stream_transcript(call_id: str):
 
 class SummarizeRequest(BaseModel):
     transcript: list[dict] = []
+    direct_call: bool = False
 
 
 @app.post("/api/call/{call_id}/summarize")
@@ -314,6 +422,14 @@ async def summarize_call(call_id: str, req: SummarizeRequest):
             "key_points": [],
         }
 
+    # Determine if direct call from request or from stored call record
+    is_direct = req.direct_call
+    if not is_direct and call:
+        is_direct = call.get("direct_call", False)
+
+    caller_role = "an Associate (human agent)" if is_direct else "an AI Agent"
+    caller_label = "Associate" if is_direct else "AI Agent"
+
     import openai as oai
     client = oai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
@@ -324,13 +440,14 @@ async def summarize_call(call_id: str, req: SummarizeRequest):
                 {
                     "role": "system",
                     "content": (
-                        "You are a call center analyst. Given a call transcript between an AI Agent and a Customer, "
+                        f"You are a call center analyst. Given a call transcript between {caller_role} and a Customer, "
                         "provide:\n"
                         "1. A concise summary (2-3 sentences)\n"
                         "2. Key points as a JSON array of strings\n"
                         "3. A suggested engagement disposition from these options: "
                         "\"Delivery Confirmed\", \"Delivery Rescheduled\", \"Customer Callback Requested\", "
                         "\"Transferred to Human Agent\", \"Voicemail Left\", \"No Contact\", \"Customer Declined\"\n\n"
+                        f"The transcript uses \"{caller_label}\" to refer to the caller and \"Customer\" for the person called.\n\n"
                         "Respond in JSON format:\n"
                         "{\"summary\": \"...\", \"key_points\": [\"...\"], \"suggested_disposition\": \"...\"}"
                     ),
@@ -392,9 +509,11 @@ async def save_disposition(call_id: str, req: SaveDispositionRequest):
         text = t.get("text", "")
         transcript_lines.append(f"  {speaker}: {text}")
 
+    call_type = "Human Direct Call" if call.get("direct_call", False) else "AI Agent Call"
     content = (
         f"Call ID: {call_id}\n"
         f"Date: {time.strftime('%Y-%m-%d %H:%M:%S')}\n"
+        f"Call Type: {call_type}\n"
         f"Caller: {call.get('caller_name', 'Unknown')}\n"
         f"Phone: {call.get('phone_number', 'Unknown')}\n"
         f"Disposition: {req.disposition}\n"
@@ -409,6 +528,77 @@ async def save_disposition(call_id: str, req: SaveDispositionRequest):
     logger.info(f"Disposition file saved: {filepath}")
 
     return {"status": "ok", "message": f"Disposition '{req.disposition}' saved", "file": filename}
+
+
+@app.post("/api/direct-call")
+async def initiate_direct_call(req: CallRequest):
+    """Create a LiveKit room, dial the customer via SIP, and return a token for the associate browser."""
+    import uuid
+    room_name = f"direct-{uuid.uuid4().hex[:8]}"
+    call_id = f"DC-{uuid.uuid4().hex[:8]}"
+
+    room_metadata = json.dumps({"direct_call": True})
+
+    lk_api = api.LiveKitAPI(LIVEKIT_URL, LIVEKIT_API_KEY, LIVEKIT_API_SECRET)
+    try:
+        # Create the room with metadata so agent workers know to skip it
+        # Set agents to a non-existent agent name to override default auto-dispatch
+        # This prevents the outbound-caller agent from being dispatched to this room
+        await lk_api.room.create_room(
+            api.CreateRoomRequest(
+                name=room_name,
+                metadata=room_metadata,
+                agents=[api.RoomAgentDispatch(agent_name="none")],
+            )
+        )
+        logger.info(f"[direct-call] room created: {room_name}")
+
+        # Dial the customer via SIP (no agent dispatch)
+        sip_trunk_id = os.getenv("SIP_OUTBOUND_TRUNK_ID", "")
+        if not sip_trunk_id:
+            raise HTTPException(status_code=500, detail="SIP_OUTBOUND_TRUNK_ID not configured")
+
+        await lk_api.sip.create_sip_participant(
+            api.CreateSIPParticipantRequest(
+                room_name=room_name,
+                sip_trunk_id=sip_trunk_id,
+                sip_call_to=req.phone_number,
+                participant_identity=req.phone_number,
+            )
+        )
+        logger.info(f"[direct-call] SIP participant dialing {req.phone_number}")
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"[direct-call] error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        await lk_api.aclose()
+
+    # Generate a token for the associate to join with mic
+    associate_identity = "ops-associate"
+    join_token = _generate_participant_token(room_name, associate_identity, req.caller_name or "Associate")
+
+    active_calls[call_id] = {
+        "call_id": call_id,
+        "dispatch_id": "",
+        "room_name": room_name,
+        "phone_number": req.phone_number,
+        "caller_name": req.caller_name,
+        "status": "ringing",
+        "started_at": time.time(),
+        "transcripts": [],
+        "direct_call": True,
+    }
+
+    return {
+        "status": "ok",
+        "call_id": call_id,
+        "room_name": room_name,
+        "livekit_url": LIVEKIT_URL,
+        "token": join_token,
+    }
 
 
 @app.post("/api/call/{call_id}/end")
